@@ -58,19 +58,46 @@ public async Task<IActionResult> Index()
         }
 
         // POST: Categories/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Create([Bind("Id,Name,Description")] Category category)
+{
+    // Debug: Log the model state
+    Console.WriteLine($"ModelState IsValid: {ModelState.IsValid}");
+    
+    foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+    {
+        Console.WriteLine($"Error: {error.ErrorMessage}");
+    }
+    
+    Console.WriteLine($"Category Name: {category.Name}, Description: {category.Description}");
+    
+    if (ModelState.IsValid)
+    {
+        Console.WriteLine("Attempting to save category...");
+        try
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(category);
-                await _context.SaveChangesAsync();
-                TempData["Success"] = "Category created successfully!";
-                return RedirectToAction(nameof(Index));
-            }
-            return View(category);
+            _context.Add(category);
+            var result = await _context.SaveChangesAsync();
+            Console.WriteLine($"Save result: {result} rows affected");
+            
+            TempData["Success"] = "Category created successfully!";
+            return RedirectToAction(nameof(Index));
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error saving category: {ex.Message}");
+            ModelState.AddModelError("", $"Error saving category: {ex.Message}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("ModelState is INVALID");
+    }
+    
+    // If we get here, something went wrong
+    return View(category);
+}
 
         // GET: Categories/Edit/5
         public async Task<IActionResult> Edit(int? id)
