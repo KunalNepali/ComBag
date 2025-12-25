@@ -1,0 +1,76 @@
+@model ComBag.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <img src="@(Model.ImageUrl ?? "/images/placeholder.jpg")" 
+             class="img-fluid rounded"
+             alt="@Model.Name">
+    </div>
+    
+    <div class="col-md-6">
+        <h1>@Model.Name</h1>
+        
+        @if (!string.IsNullOrEmpty(Model.Category?.Name))
+        {
+            <span class="badge bg-secondary">@Model.Category.Name</span>
+        }
+        
+        <h2 class="text-primary my-3">$@Model.Price.ToString("N2")</h2>
+        
+        <div class="mb-3">
+            <span class="badge @(Model.StockQuantity > 0 ? "bg-success" : "bg-danger") fs-6">
+                @if (Model.StockQuantity > 0)
+                {
+                    <text>@Model.StockQuantity in stock</text>
+                }
+                else
+                {
+                    <text>Out of Stock</text>
+                }
+            </span>
+        </div>
+        
+        <p class="lead">@Model.Description</p>
+        
+        <hr />
+        
+        @if (Model.StockQuantity > 0)
+        {
+            <form asp-controller="Cart" asp-action="AddToCart" method="post" class="row g-3">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                
+                <div class="col-auto">
+                    <label for="quantity" class="col-form-label">Quantity:</label>
+                </div>
+                <div class="col-auto">
+                    <input type="number" 
+                           name="quantity" 
+                           id="quantity" 
+                           value="1" 
+                           min="1" 
+                           max="@Model.StockQuantity"
+                           class="form-control" 
+                           style="width: 80px;">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="bi bi-cart-plus"></i> Add to Cart
+                    </button>
+                </div>
+            </form>
+        }
+        else
+        {
+            <button class="btn btn-secondary btn-lg" disabled>Out of Stock</button>
+        }
+        
+        <div class="mt-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Continue Shopping
+            </a>
+        </div>
+    </div>
+</div>

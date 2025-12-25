@@ -1,0 +1,42 @@
+@using Microsoft.AspNetCore.Identity
+@using ComBag.Models
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<ul class="navbar-nav">
+@if (SignInManager.IsSignedIn(User))
+{
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Manage">Hello @User.Identity?.Name!</a>
+    </li>
+    @if (User.IsInRole("Admin"))
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Admin" asp-action="Dashboard">
+                <i class="bi bi-speedometer2"></i> Admin
+            </a>
+        </li>
+    }
+    <li class="nav-item">
+        <form asp-controller="Account" asp-action="Logout" method="post">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
+        </form>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Cart" asp-action="Index">
+            <i class="bi bi-cart"></i> Cart
+        </a>
+    </li>
+}
+else
+{
+    <!-- ✅ CHANGE THESE LINKS to use MVC controllers -->
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+    </li>
+}
+</ul>

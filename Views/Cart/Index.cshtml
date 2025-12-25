@@ -1,0 +1,131 @@
+@model List<ComBag.Controllers.CartItemViewModel>
+@{
+    ViewData["Title"] = "Shopping Cart";
+    decimal total = Model?.Sum(item => item.Subtotal) ?? 0;
+}
+
+<div class="container">
+    <h2>Your Shopping Cart</h2>
+    
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            Your cart is empty. <a asp-controller="Home" asp-action="Index">Continue shopping</a>
+        </div>
+        return;
+    }
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <img src="@(item.ImageUrl ?? "/images/placeholder.jpg")" 
+                                             class="img-thumbnail me-3" 
+                                             style="width: 80px; height: 80px; object-fit: cover;">
+                                        <div>
+                                            <h6>@item.ProductName</h6>
+                                            <small class="text-muted">Stock: @item.StockQuantity</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>$@item.Price.ToString("N2")</td>
+                                <td>
+                                    <form asp-action="UpdateQuantity" method="post" class="d-flex">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="productId" value="@item.ProductId" />
+
+                                        <input type="hidden" name="productId" value="@item.ProductId" />
+                                        <input type="number" 
+                                               name="quantity" 
+                                               value="@item.Quantity" 
+                                               min="1" 
+                                               max="@item.StockQuantity"
+                                               class="form-control form-control-sm" 
+                                               style="width: 70px;">
+                                        <button type="submit" class="btn btn-sm btn-outline-primary ms-2">
+                                            Update
+                                        </button>
+                                    </form>
+                                </td>
+                                <td>$@item.Subtotal.ToString("N2")</td>
+                                <td>
+                                    <form asp-action="RemoveFromCart" method="post">
+                                        @Html.AntiForgeryToken()
+
+                                        <input type="hidden" name="productId" value="@item.ProductId" />
+                                        <button type="submit" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+                <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-left"></i> Continue Shopping
+                </a>
+                <form asp-action="ClearCart" method="post">
+                        @Html.AntiForgeryToken()
+
+                    <button type="submit" class="btn btn-outline-danger">
+                        <i class="bi bi-cart-x"></i> Clear Cart
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tbody>
+                            <tr>
+                                <td>Subtotal</td>
+                                <td class="text-end">$@total.ToString("N2")</td>
+                            </tr>
+                            <tr>
+                                <td>Shipping</td>
+                                <td class="text-end">$0.00</td>
+                            </tr>
+                            <tr class="border-top">
+                                <th>Total</th>
+                                <th class="text-end">$@total.ToString("N2")</th>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <div class="d-grid gap-2">
+                        <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary btn-lg">
+                            <i class="bi bi-lock"></i> Proceed to Checkout
+                        </a>
+                        <small class="text-muted text-center">
+                            <i class="bi bi-shield-check"></i> Secure checkout
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

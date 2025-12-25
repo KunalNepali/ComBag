@@ -1,0 +1,124 @@
+@model ComBag.Controllers.CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+
+<div class="container">
+    <h2>Checkout</h2>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="PlaceOrder" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label asp-for="ShippingAddress" class="form-label">Address</label>
+                                <input asp-for="ShippingAddress" class="form-control" 
+                                       value="@(Model.User?.Address)" required>
+                                <span asp-validation-for="ShippingAddress" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label asp-for="ShippingCity" class="form-label">City</label>
+                                <input asp-for="ShippingCity" class="form-control"
+                                       value="@(Model.User?.City)" required>
+                                <span asp-validation-for="ShippingCity" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <label asp-for="ShippingState" class="form-label">State</label>
+                                <input asp-for="ShippingState" class="form-control"
+                                       value="@(Model.User?.State)" required>
+                                <span asp-validation-for="ShippingState" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <label asp-for="ShippingPostalCode" class="form-label">Postal Code</label>
+                                <input asp-for="ShippingPostalCode" class="form-control"
+                                       value="@(Model.User?.PostalCode)" required>
+                                <span asp-validation-for="ShippingPostalCode" class="text-danger"></span>
+                            </div>
+                            
+                            <div class="col-12">
+                                <div class="form-check">
+                                    <input asp-for="SaveAddress" class="form-check-input" checked>
+                                    <label asp-for="SaveAddress" class="form-check-label">
+                                        Save this address for future orders
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="my-4">
+                        
+                        <div class="card">
+                            <div class="card-header">
+                                <h6 class="mb-0">Payment Method</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="alert alert-info">
+                                    <i class="bi bi-cash-coin"></i>
+                                    <strong>Cash on Delivery (COD) Only</strong>
+                                    <p class="mb-0">Pay when your order is delivered.</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-grid mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-check-circle"></i> Place Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Order Summary</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        @foreach (var item in Model.CartItems)
+                        {
+                            <li class="list-group-item d-flex justify-content-between">
+                                <div>
+                                    <small>@item.ProductName x @item.Quantity</small>
+                                </div>
+                                <span>$@item.Subtotal.ToString("N2")</span>
+                            </li>
+                        }
+                    </ul>
+                    
+                    <div class="d-flex justify-content-between border-top pt-3">
+                        <strong>Total</strong>
+                        <strong>$@Model.TotalAmount.ToString("N2")</strong>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-body">
+                    <h6><i class="bi bi-truck"></i> Delivery Information</h6>
+                    <ul class="list-unstyled small">
+                        <li>• 3-5 business days delivery</li>
+                        <li>• Cash payment on delivery</li>
+                        <li>• Free shipping</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

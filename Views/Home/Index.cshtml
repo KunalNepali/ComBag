@@ -1,0 +1,45 @@
+﻿@model List<ComBag.Models.Product>
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">
+                <h5>Categories</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <a asp-action="Index">All Products</a>
+                    </li>
+                    @foreach (var category in ViewBag.Categories)
+                    {
+                        <li class="list-group-item @(ViewBag.SelectedCategory == category.Id ? "active" : "")">
+                            <a asp-action="Index" asp-route-categoryId="@category.Id">@category.Name</a>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <div class="row">
+            @if (Model.Count == 0)
+            {
+                <div class="col-12">
+                    <div class="alert alert-info">No products found in this category.</div>
+                </div>
+            }
+            
+            @foreach (var product in Model)
+            {
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <partial name="_ProductCard" model="product" />
+                </div>
+            }
+        </div>
+    </div>
+</div>
