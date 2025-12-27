@@ -123,72 +123,118 @@ namespace ComBag.Controllers
         }
 
         // POST: AdminProducts/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Product product, IFormFile imageFile)
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Edit(int id, Product product, IFormFile imageFile)
+{
+    // DEBUG: Log what's coming in
+    Console.WriteLine($"=== EDIT POST START ===");
+    Console.WriteLine($"URL ID: {id}, Product ID: {product?.Id}");
+    Console.WriteLine($"Name: '{product?.Name}', Price: {product?.Price}, Stock: {product?.StockQuantity}");
+    
+    if (id != product?.Id)
+    {
+        Console.WriteLine($"ID MISMATCH: {id} != {product?.Id}");
+        return NotFound();
+    }
+
+    if (ModelState.IsValid)
+    {
+        Console.WriteLine("ModelState is VALID");
+        try
         {
-            if (id != product.Id)
+            // Get the existing product from database
+            var existingProduct = await _context.Products.FindAsync(id);
+            if (existingProduct == null)
             {
+                Console.WriteLine($"Product {id} not found in database");
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            Console.WriteLine($"Found existing product: {existingProduct.Name}");
+            
+            // Update properties
+            existingProduct.Name = product.Name;
+            existingProduct.Description = product.Description;
+            existingProduct.Price = product.Price;
+            existingProduct.StockQuantity = product.StockQuantity;
+            existingProduct.CategoryId = product.CategoryId;
+
+            Console.WriteLine($"Updated: Name='{existingProduct.Name}', Price={existingProduct.Price}");
+
+            // Handle image upload
+            if (imageFile != null && imageFile.Length > 0)
             {
-                try
+                Console.WriteLine($"New image uploaded: {imageFile.FileName}");
+                var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
+                if (!Directory.Exists(uploadsFolder))
                 {
-                    // Handle image upload if new file is provided
-                    if (imageFile != null && imageFile.Length > 0)
-                    {
-                        var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads");
-                        if (!Directory.Exists(uploadsFolder))
-                        {
-                            Directory.CreateDirectory(uploadsFolder);
-                        }
-
-                        // Delete old image if exists
-                        if (!string.IsNullOrEmpty(product.ImageUrl) && product.ImageUrl != "/images/placeholder.jpg")
-                        {
-                            var oldImagePath = Path.Combine(_environment.WebRootPath, product.ImageUrl.TrimStart('/'));
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
-
-                        var uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
-                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await imageFile.CopyToAsync(stream);
-                        }
-
-                        product.ImageUrl = "/uploads/" + uniqueFileName;
-                    }
-
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                    TempData["Success"] = "Product updated successfully!";
+                    Directory.CreateDirectory(uploadsFolder);
                 }
-                catch (DbUpdateConcurrencyException)
+
+                // Delete old image if exists
+                if (!string.IsNullOrEmpty(existingProduct.ImageUrl) && 
+                    existingProduct.ImageUrl != "/images/placeholder.jpg")
                 {
-                    if (!ProductExists(product.Id))
+                    var oldImagePath = Path.Combine(_environment.WebRootPath, 
+                        existingProduct.ImageUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(oldImagePath))
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        System.IO.File.Delete(oldImagePath);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + imageFile.FileName;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                existingProduct.ImageUrl = "/uploads/" + uniqueFileName;
+                Console.WriteLine($"Image updated to: {existingProduct.ImageUrl}");
             }
 
-            ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
-            return View(product);
+            // Mark as modified and save
+            _context.Entry(existingProduct).State = EntityState.Modified;
+            var result = await _context.SaveChangesAsync();
+            
+            Console.WriteLine($"SaveChangesAsync result: {result} rows affected");
+            
+            if (result > 0)
+            {
+                TempData["Success"] = "Product updated successfully!";
+                Console.WriteLine("Redirecting to Index...");
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                Console.WriteLine("No rows affected - update failed");
+                TempData["Error"] = "Failed to update product.";
+            }
         }
-
-        // GET: AdminProducts/Delete/5
+        catch (Exception ex)
+        {
+            Console.WriteLine($"EXCEPTION: {ex.Message}");
+            Console.WriteLine($"INNER EXCEPTION: {ex.InnerException?.Message}");
+            ModelState.AddModelError("", $"Error saving product: {ex.Message}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("ModelState is INVALID");
+        foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+        {
+            Console.WriteLine($"Validation Error: {error.ErrorMessage}");
+        }
+    }
+    // If we get here, reload categories
+    ViewBag.Categories = new SelectList(await _context.Categories.ToListAsync(), "Id", "Name");
+    Console.WriteLine("=== EDIT POST END ===");
+    return View(product);
+}
+       // GET: AdminProducts/Delete/5
         public async Task<IActionResult> Delete(int id)
         {
             var product = await _context.Products

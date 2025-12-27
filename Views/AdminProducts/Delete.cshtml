@@ -1,0 +1,85 @@
+@model ComBag.Models.Product
+@{
+    ViewData["Title"] = "Delete Product";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <h1 class="h2 mb-4 text-danger">Delete Product</h1>
+
+    <div class="alert alert-danger">
+        <h4 class="alert-heading">Warning!</h4>
+        <p>Are you sure you want to delete this product? This action cannot be undone.</p>
+        <hr>
+        <p class="mb-0"><strong>Note:</strong> If this product has been ordered, you should not delete it.</p>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h5>Product Details</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4">ID</dt>
+                        <dd class="col-sm-8">@Model.Id</dd>
+                        
+                        <dt class="col-sm-4">Name</dt>
+                        <dd class="col-sm-8">@Model.Name</dd>
+                        
+                        <dt class="col-sm-4">Price</dt>
+                        <dd class="col-sm-8">$@Model.Price.ToString("N2")</dd>
+                        
+                        <dt class="col-sm-4">Stock</dt>
+                        <dd class="col-sm-8">@Model.StockQuantity units</dd>
+                        
+                        <dt class="col-sm-4">Category</dt>
+                        <dd class="col-sm-8">
+                            @if (Model.Category != null)
+                            {
+                                <span class="badge bg-primary">@Model.Category.Name</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">No category</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                    {
+                        <img src="@Model.ImageUrl" class="img-fluid rounded" style="max-height: 200px;">
+                    }
+                    else
+                    {
+                        <div class="text-muted p-5">No image</div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5>Description</h5>
+            <p>@(string.IsNullOrEmpty(Model.Description) ? "No description" : Model.Description)</p>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post" class="mt-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        
+        <div class="d-flex justify-content-between">
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Delete Product
+            </button>
+        </div>
+    </form>
+</div>
