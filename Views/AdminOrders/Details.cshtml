@@ -1,0 +1,210 @@
+@model ComBag.Models.Order
+@{
+    ViewData["Title"] = "Order Details";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h2">Order Details: #@Model.Id</h1>
+        <div>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Back to Orders
+            </a>
+        </div>
+    </div>
+
+    <!-- Order Status Alert -->
+    <div class="alert @GetStatusAlertClass(Model.Status)">
+        <h5 class="alert-heading">Order Status: @Model.Status</h5>
+        <p class="mb-0">
+            <strong>Order Date:</strong> @Model.OrderDate.ToString("MMM dd, yyyy hh:mm tt") |
+            <strong>Payment Method:</strong> @Model.PaymentMethod
+        </p>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Order Items -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Order Items</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.OrderItems)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="@(item.Product?.ImageUrl ?? "/images/placeholder.jpg")" 
+                                                     class="img-thumbnail me-3" 
+                                                     style="width: 60px; height: 60px; object-fit: cover;">
+                                                <div>
+                                                    <strong>@item.Product?.Name</strong><br>
+                                                    <small class="text-muted">SKU: @item.ProductId</small>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>$@item.UnitPrice.ToString("N2")</td>
+                                        <td>@item.Quantity</td>
+                                        <td>$@((item.Quantity * item.UnitPrice).ToString("N2"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr class="border-top">
+                                    <th colspan="3" class="text-end">Total:</th>
+                                    <th>$@Model.TotalAmount.ToString("N2")</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Information -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Shipping Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Address</dt>
+                        <dd class="col-sm-9">@Model.ShippingAddress</dd>
+                        
+                        <dt class="col-sm-3">City</dt>
+                        <dd class="col-sm-9">@Model.ShippingCity</dd>
+                        
+                        <dt class="col-sm-3">State/Province</dt>
+                        <dd class="col-sm-9">@Model.ShippingState</dd>
+                        
+                        <dt class="col-sm-3">Postal Code</dt>
+                        <dd class="col-sm-9">@Model.ShippingPostalCode</dd>
+                        
+                        <dt class="col-sm-3">Customer</dt>
+                        <dd class="col-sm-9">@Model.User?.Email (@Model.User?.FullName)</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Order Actions -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Order Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <!-- Status Update Form -->
+                        <div class="mb-3">
+                            <label class="form-label">Update Status</label>
+                            <form method="post" asp-action="UpdateStatus" class="mb-2">
+                                <input type="hidden" name="id" value="@Model.Id" />
+                                <div class="input-group">
+                                    <select name="status" class="form-select">
+                                        <option value="Pending" selected="@(Model.Status == "Pending")">Pending</option>
+                                        <option value="Processing" selected="@(Model.Status == "Processing")">Processing</option>
+                                        <option value="Shipped" selected="@(Model.Status == "Shipped")">Shipped</option>
+                                        <option value="Delivered" selected="@(Model.Status == "Delivered")">Delivered</option>
+                                        <option value="Cancelled" selected="@(Model.Status == "Cancelled")">Cancelled</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary">
+                                        Update
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <a href="mailto:@Model.User?.Email" class="btn btn-outline-info">
+                            <i class="bi bi-envelope"></i> Email Customer
+                        </a>
+                        
+                        <button class="btn btn-outline-secondary" onclick="window.print()">
+                            <i class="bi bi-printer"></i> Print Order
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Order Timeline -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Order Timeline</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-cart-check text-primary"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">Order Placed</h6>
+                                    <small class="text-muted">@Model.OrderDate.ToString("MMM dd, yyyy hh:mm tt")</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="mb-3">
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-credit-card text-info"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">Payment: @Model.PaymentMethod</h6>
+                                    <small class="text-muted">Payment received</small>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="d-flex">
+                                <div class="flex-shrink-0">
+                                    <i class="bi bi-truck @(Model.Status == "Shipped" || Model.Status == "Delivered" ? "text-success" : "text-muted")"></i>
+                                </div>
+                                <div class="flex-grow-1 ms-3">
+                                    <h6 class="mb-0">Shipping</h6>
+                                    <small class="text-muted">
+                                        @if (Model.Status == "Shipped" || Model.Status == "Delivered")
+                                        {
+                                            <text>Order shipped to customer</text>
+                                        }
+                                        else
+                                        {
+                                            <text>Awaiting shipment</text>
+                                        }
+                                    </small>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusAlertClass(string status)
+    {
+        return status.ToLower() switch
+        {
+            "pending" => "alert-warning",
+            "processing" => "alert-info",
+            "shipped" => "alert-primary",
+            "delivered" => "alert-success",
+            "cancelled" => "alert-danger",
+            _ => "alert-secondary"
+        };
+    }
+}

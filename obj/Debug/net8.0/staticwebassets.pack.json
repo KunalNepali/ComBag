@@ -245,24 +245,16 @@
       "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.map"
     },
     {
-      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/15d26635-ec3f-4aac-8303-9a3e9295e85a_sapphiree.png",
-      "PackagePath": "staticwebassets/uploads/15d26635-ec3f-4aac-8303-9a3e9295e85a_sapphiree.png"
-    },
-    {
-      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/2ce8be65-972c-4d2b-9aa3-42bc86d960f4_metro_in_dino.png",
-      "PackagePath": "staticwebassets/uploads/2ce8be65-972c-4d2b-9aa3-42bc86d960f4_metro_in_dino.png"
-    },
-    {
       "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/4d6a04f5-9e6c-4650-a161-b2cfee9bc05f_James_Gosling_2008.jpg",
       "PackagePath": "staticwebassets/uploads/4d6a04f5-9e6c-4650-a161-b2cfee9bc05f_James_Gosling_2008.jpg"
     },
     {
-      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png",
-      "PackagePath": "staticwebassets/uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png"
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/66ece46c-4332-47d0-a869-aed855628742_jjk.jpg",
+      "PackagePath": "staticwebassets/uploads/66ece46c-4332-47d0-a869-aed855628742_jjk.jpg"
     },
     {
-      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/c6d527f4-669f-4ed9-95d3-0993c7afaf2c_sapphire.png",
-      "PackagePath": "staticwebassets/uploads/c6d527f4-669f-4ed9-95d3-0993c7afaf2c_sapphire.png"
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png",
+      "PackagePath": "staticwebassets/uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ComBag.Microsoft.AspNetCore.StaticWebAssets.props",

@@ -126,6 +126,7 @@ namespace ComBag.Controllers
 
         // POST: AdminOrders/UpdateStatus/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(int id, string status)
         {
             var order = await _context.Orders.FindAsync(id);
@@ -139,7 +140,7 @@ namespace ComBag.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Success"] = $"Order #{id} status updated to {status}";
-            return Ok();
+            return RedirectToAction("Details", new { id = id });
         }
 
         private bool OrderExists(int id)

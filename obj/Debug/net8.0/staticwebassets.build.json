@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "UobxEztIhVt2cGdS9LF1L9KWTMOlP6XabllpdsIm1Bs=",
+  "Hash": "VuzG0UQjRwFQAxEl8nbdAbw4kzD6nEkzz5070idnNQU=",
   "Source": "ComBag",
   "BasePath": "_content/ComBag",
   "Mode": "Default",
@@ -2335,44 +2335,6 @@
       "OriginalItemSpec": "wwwroot/lib/jquery/LICENSE.txt"
     },
     {
-      "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/15d26635-ec3f-4aac-8303-9a3e9295e85a_sapphiree.png",
-      "SourceId": "ComBag",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/kunal/Desktop/ComBag/wwwroot/",
-      "BasePath": "_content/ComBag",
-      "RelativePath": "uploads/15d26635-ec3f-4aac-8303-9a3e9295e85a_sapphiree.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/uploads/15d26635-ec3f-4aac-8303-9a3e9295e85a_sapphiree.png"
-    },
-    {
-      "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/2ce8be65-972c-4d2b-9aa3-42bc86d960f4_metro_in_dino.png",
-      "SourceId": "ComBag",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/kunal/Desktop/ComBag/wwwroot/",
-      "BasePath": "_content/ComBag",
-      "RelativePath": "uploads/2ce8be65-972c-4d2b-9aa3-42bc86d960f4_metro_in_dino.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/uploads/2ce8be65-972c-4d2b-9aa3-42bc86d960f4_metro_in_dino.png"
-    },
-    {
       "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/4d6a04f5-9e6c-4650-a161-b2cfee9bc05f_James_Gosling_2008.jpg",
       "SourceId": "ComBag",
       "SourceType": "Discovered",
@@ -2392,6 +2354,25 @@
       "OriginalItemSpec": "wwwroot/uploads/4d6a04f5-9e6c-4650-a161-b2cfee9bc05f_James_Gosling_2008.jpg"
     },
     {
+      "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/66ece46c-4332-47d0-a869-aed855628742_jjk.jpg",
+      "SourceId": "ComBag",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/kunal/Desktop/ComBag/wwwroot/",
+      "BasePath": "_content/ComBag",
+      "RelativePath": "uploads/66ece46c-4332-47d0-a869-aed855628742_jjk.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/66ece46c-4332-47d0-a869-aed855628742_jjk.jpg"
+    },
+    {
       "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png",
       "SourceId": "ComBag",
       "SourceType": "Discovered",
@@ -2409,25 +2390,6 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png"
-    },
-    {
-      "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/c6d527f4-669f-4ed9-95d3-0993c7afaf2c_sapphire.png",
-      "SourceId": "ComBag",
-      "SourceType": "Discovered",
-      "ContentRoot": "/home/kunal/Desktop/ComBag/wwwroot/",
-      "BasePath": "_content/ComBag",
-      "RelativePath": "uploads/c6d527f4-669f-4ed9-95d3-0993c7afaf2c_sapphire.png",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "AssetMergeBehavior": "PreferTarget",
-      "AssetMergeSource": "",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot/uploads/c6d527f4-669f-4ed9-95d3-0993c7afaf2c_sapphire.png"
     }
   ]
 }
