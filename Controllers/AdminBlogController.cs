@@ -148,7 +148,8 @@ public async Task<IActionResult> Create(BlogPost blogPost, IFormFile featuredIma
 
     ViewBag.Categories = new SelectList(await _context.BlogCategories.ToListAsync(), "Id", "Name");
     return View(blogPost);
-}
+ }
+ 
         public async Task<IActionResult> Edit(int id)
         {
             var blogPost = await _context.BlogPosts.FindAsync(id);
@@ -163,72 +164,125 @@ public async Task<IActionResult> Create(BlogPost blogPost, IFormFile featuredIma
 
         // POST: AdminBlog/Edit/5
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, BlogPost blogPost, IFormFile featuredImage)
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Edit(int id, BlogPost blogPost, IFormFile featuredImage)
+{
+    Console.WriteLine($"=== EDIT BLOG POST DEBUG ===");
+    Console.WriteLine($"ID: {id}, BlogPost.ID: {blogPost.Id}");
+    Console.WriteLine($"ModelState IsValid: {ModelState.IsValid}");
+    Console.WriteLine($"Title: {blogPost.Title}");
+    Console.WriteLine($"CategoryId: {blogPost.BlogCategoryId}");
+    Console.WriteLine($"FeaturedImageUrl (existing): {blogPost.FeaturedImageUrl}");
+
+    if (id != blogPost.Id)
+    {
+        Console.WriteLine($"ID mismatch: {id} != {blogPost.Id}");
+        return NotFound();
+    }
+
+    if (ModelState.IsValid)
+    {
+        Console.WriteLine("ModelState is VALID - Attempting to update...");
+        
+        try
         {
-            if (id != blogPost.Id)
+            // Get the existing blog post from database
+            var existingPost = await _context.BlogPosts.FindAsync(id);
+            if (existingPost == null)
             {
+                Console.WriteLine($"Blog post {id} not found in database");
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            Console.WriteLine($"Found existing post: {existingPost.Title}");
+
+            // Handle image upload if new file is provided
+            if (featuredImage != null && featuredImage.Length > 0)
             {
-                try
+                Console.WriteLine($"New image uploaded: {featuredImage.FileName}");
+                
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "blog");
+                if (!Directory.Exists(uploadsFolder))
                 {
-                    // Handle image upload if new file is provided
-                    if (featuredImage != null && featuredImage.Length > 0)
-                    {
-                        var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "blog");
-                        if (!Directory.Exists(uploadsFolder))
-                        {
-                            Directory.CreateDirectory(uploadsFolder);
-                        }
-
-                        // Delete old image if exists
-                        if (!string.IsNullOrEmpty(blogPost.FeaturedImageUrl))
-                        {
-                            var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", blogPost.FeaturedImageUrl.TrimStart('/'));
-                            if (System.IO.File.Exists(oldImagePath))
-                            {
-                                System.IO.File.Delete(oldImagePath);
-                            }
-                        }
-
-                        var uniqueFileName = Guid.NewGuid().ToString() + "_" + featuredImage.FileName;
-                        var filePath = Path.Combine(uploadsFolder, uniqueFileName);
-
-                        using (var stream = new FileStream(filePath, FileMode.Create))
-                        {
-                            await featuredImage.CopyToAsync(stream);
-                        }
-
-                        blogPost.FeaturedImageUrl = "/uploads/blog/" + uniqueFileName;
-                    }
-
-                    blogPost.LastUpdated = DateTime.UtcNow;
-
-                    _context.Update(blogPost);
-                    await _context.SaveChangesAsync();
-
-                    TempData["Success"] = "Blog post updated successfully!";
+                    Directory.CreateDirectory(uploadsFolder);
                 }
-                catch (DbUpdateConcurrencyException)
+
+                // Delete old image if exists
+                if (!string.IsNullOrEmpty(existingPost.FeaturedImageUrl))
                 {
-                    if (!BlogPostExists(blogPost.Id))
+                    var oldImagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", existingPost.FeaturedImageUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(oldImagePath))
                     {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
+                        System.IO.File.Delete(oldImagePath);
+                        Console.WriteLine($"Deleted old image: {existingPost.FeaturedImageUrl}");
                     }
                 }
-                return RedirectToAction(nameof(Index));
+
+                var uniqueFileName = Guid.NewGuid().ToString() + "_" + featuredImage.FileName;
+                var filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await featuredImage.CopyToAsync(stream);
+                }
+
+                existingPost.FeaturedImageUrl = "/uploads/blog/" + uniqueFileName;
+                Console.WriteLine($"Set new image: {existingPost.FeaturedImageUrl}");
+            }
+            else
+            {
+                Console.WriteLine("No new image uploaded, keeping existing");
+                // Keep existing FeaturedImageUrl from database, not from form
+                blogPost.FeaturedImageUrl = existingPost.FeaturedImageUrl;
             }
 
-            ViewBag.Categories = new SelectList(await _context.BlogCategories.ToListAsync(), "Id", "Name");
-            return View(blogPost);
+            // Update only the fields that should change
+            existingPost.Title = blogPost.Title;
+            existingPost.Content = blogPost.Content;
+            existingPost.Excerpt = blogPost.Excerpt;
+            existingPost.BlogCategoryId = blogPost.BlogCategoryId;
+            existingPost.Tags = blogPost.Tags;
+            existingPost.Slug = blogPost.Slug;
+            existingPost.Author = blogPost.Author;
+            existingPost.IsPublished = blogPost.IsPublished;
+            existingPost.AllowComments = blogPost.AllowComments;
+            existingPost.LastUpdated = DateTime.UtcNow;
+            
+            // If FeaturedImageUrl was updated, set it
+            if (!string.IsNullOrEmpty(blogPost.FeaturedImageUrl))
+            {
+                existingPost.FeaturedImageUrl = blogPost.FeaturedImageUrl;
+            }
+
+            Console.WriteLine($"Updating blog post #{id}: {existingPost.Title}");
+            
+            _context.Update(existingPost);
+            var result = await _context.SaveChangesAsync();
+            
+            Console.WriteLine($"Save result: {result} rows affected");
+
+            TempData["Success"] = "Blog post updated successfully!";
+            return RedirectToAction(nameof(Index));
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"ERROR updating blog post: {ex.Message}");
+            Console.WriteLine($"Inner exception: {ex.InnerException?.Message}");
+            ModelState.AddModelError("", $"Error updating blog post: {ex.Message}");
+        }
+    }
+    else
+    {
+        Console.WriteLine("ModelState is INVALID - not saving");
+        foreach (var error in ModelState.Values.SelectMany(v => v.Errors))
+        {
+            Console.WriteLine($"Validation error: {error.ErrorMessage}");
+        }
+    }
+
+    ViewBag.Categories = new SelectList(await _context.BlogCategories.ToListAsync(), "Id", "Name");
+    return View(blogPost);
+}
 
         // POST: AdminBlog/Delete/5
         [HttpPost]
