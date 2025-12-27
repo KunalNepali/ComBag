@@ -21,11 +21,17 @@
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     
-                    <div class="mb-3">
-                        <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" class="form-control" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
+<!-- Password field section -->
+<div class="mb-3">
+    <label asp-for="Password" class="form-label"></label>
+    <div class="input-group">
+        <input asp-for="Password" class="form-control" type="password" id="loginPassword" />
+        <button class="btn btn-outline-secondary" type="button" id="toggleLoginPassword">
+            <i class="bi bi-eye" id="loginPasswordIcon"></i>
+        </button>
+    </div>
+    <span asp-validation-for="Password" class="text-danger"></span>
+</div>
                     
                     <div class="mb-3 form-check">
                         <input asp-for="RememberMe" class="form-check-input" />

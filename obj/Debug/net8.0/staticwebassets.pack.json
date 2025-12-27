@@ -13,6 +13,10 @@
       "PackagePath": "staticwebassets/favicon.ico"
     },
     {
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/js/password-toggle.js",
+      "PackagePath": "staticwebassets/js/password-toggle.js"
+    },
+    {
       "Id": "/home/kunal/Desktop/ComBag/wwwroot/js/site.js",
       "PackagePath": "staticwebassets/js/site.js"
     },
@@ -245,16 +249,40 @@
       "PackagePath": "staticwebassets/lib/jquery/dist/jquery.min.map"
     },
     {
-      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/4d6a04f5-9e6c-4650-a161-b2cfee9bc05f_James_Gosling_2008.jpg",
-      "PackagePath": "staticwebassets/uploads/4d6a04f5-9e6c-4650-a161-b2cfee9bc05f_James_Gosling_2008.jpg"
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/2c301a64-5344-40fe-821a-86a1c7251ab9_yaoi.jpg",
+      "PackagePath": "staticwebassets/uploads/2c301a64-5344-40fe-821a-86a1c7251ab9_yaoi.jpg"
+    },
+    {
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/2f73cb06-fae9-437a-b87c-c1fbc50f2516_itachi.jpg",
+      "PackagePath": "staticwebassets/uploads/2f73cb06-fae9-437a-b87c-c1fbc50f2516_itachi.jpg"
+    },
+    {
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/45f640b9-a763-467e-a52b-6daf0aa191a6_anime.jpg",
+      "PackagePath": "staticwebassets/uploads/45f640b9-a763-467e-a52b-6daf0aa191a6_anime.jpg"
     },
     {
       "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/66ece46c-4332-47d0-a869-aed855628742_jjk.jpg",
       "PackagePath": "staticwebassets/uploads/66ece46c-4332-47d0-a869-aed855628742_jjk.jpg"
     },
     {
-      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png",
-      "PackagePath": "staticwebassets/uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png"
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/89e5758b-9fdd-472f-8751-422f7ccc5821_haikyu.jpg",
+      "PackagePath": "staticwebassets/uploads/89e5758b-9fdd-472f-8751-422f7ccc5821_haikyu.jpg"
+    },
+    {
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/9812945b-f0e5-4ad0-9c13-e33446b409f9_cool.jpg",
+      "PackagePath": "staticwebassets/uploads/9812945b-f0e5-4ad0-9c13-e33446b409f9_cool.jpg"
+    },
+    {
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/c96c1993-6c75-4ca1-8f86-49b9ad7f64cc_demon.jpg",
+      "PackagePath": "staticwebassets/uploads/c96c1993-6c75-4ca1-8f86-49b9ad7f64cc_demon.jpg"
+    },
+    {
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/eb15f1e0-375f-4dc7-a132-32ae1bb79b6a_tr.jpg",
+      "PackagePath": "staticwebassets/uploads/eb15f1e0-375f-4dc7-a132-32ae1bb79b6a_tr.jpg"
+    },
+    {
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/f4666fb9-923b-4684-843c-45f5ec0d8f47_boruto.jpg",
+      "PackagePath": "staticwebassets/uploads/f4666fb9-923b-4684-843c-45f5ec0d8f47_boruto.jpg"
     },
     {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ComBag.Microsoft.AspNetCore.StaticWebAssets.props",
