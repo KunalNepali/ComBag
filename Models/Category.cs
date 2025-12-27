@@ -15,6 +15,6 @@ namespace ComBag.Models
         [Display(Name = "Description")]
         public string? Description { get; set; }
 
-        public List<Product> Products { get; set; }
+        public List<Product>? Products { get; set; }
     }
 }
