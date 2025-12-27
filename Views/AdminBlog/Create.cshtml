@@ -3,6 +3,18 @@
     ViewData["Title"] = "Add New Blog Post";
     Layout = "_AdminLayout";
 }
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <h5>Please fix the following errors:</h5>
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
 
 <div class="container-fluid">
     <h1 class="h2 mb-4">Add New Blog Post</h1>
@@ -24,22 +36,24 @@
                         
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label asp-for="BlogCategoryId" class="form-label"></label>
-                                    <select asp-for="BlogCategoryId" class="form-select" 
-                                            asp-items="ViewBag.Categories">
-                                        <option value="">-- Select Category --</option>
-                                    </select>
-                                    <span asp-validation-for="BlogCategoryId" class="text-danger"></span>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="featuredImage" class="form-label">Featured Image</label>
-                                    <input type="file" name="featuredImage" class="form-control" accept="image/*" />
-                                    <small class="text-muted">Recommended: 1200x600 pixels</small>
-                                </div>
-                            </div>
+    <div class="mb-3">
+        <label asp-for="BlogCategoryId" class="form-label">Category</label>
+        <select asp-for="BlogCategoryId" class="form-select" 
+                asp-items="ViewBag.Categories">
+            <option value="">-- Select Category (Optional) --</option>
+        </select>
+        <span asp-validation-for="BlogCategoryId" class="text-danger"></span>
+        <small class="text-muted">Optional: Leave empty for no category</small>
+    </div>
+</div>
+<!-- Featured Image should NOT be required -->
+<div class="col-md-6">
+    <div class="mb-3">
+        <label for="featuredImage" class="form-label">Featured Image</label>
+        <input type="file" name="featuredImage" class="form-control" accept="image/*" />
+        <small class="text-muted">Optional: Recommended 1200x600 pixels</small>
+    </div>
+</div>
                         </div>
 
                         <div class="mb-3">
