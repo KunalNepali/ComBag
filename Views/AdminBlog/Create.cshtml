@@ -1,0 +1,125 @@
+@model ComBag.Models.BlogPost
+@{
+    ViewData["Title"] = "Add New Blog Post";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <h1 class="h2 mb-4">Add New Blog Post</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Create" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="BlogCategoryId" class="form-label"></label>
+                                    <select asp-for="BlogCategoryId" class="form-select" 
+                                            asp-items="ViewBag.Categories">
+                                        <option value="">-- Select Category --</option>
+                                    </select>
+                                    <span asp-validation-for="BlogCategoryId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="featuredImage" class="form-label">Featured Image</label>
+                                    <input type="file" name="featuredImage" class="form-control" accept="image/*" />
+                                    <small class="text-muted">Recommended: 1200x600 pixels</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Excerpt" class="form-label"></label>
+                            <textarea asp-for="Excerpt" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Excerpt" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Content" class="form-label"></label>
+                            <textarea asp-for="Content" class="form-control" rows="10"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Tags" class="form-label"></label>
+                                    <input asp-for="Tags" class="form-control" placeholder="ecommerce, shopping, tips" />
+                                    <small class="text-muted">Comma separated tags</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Slug" class="form-label"></label>
+                                    <input asp-for="Slug" class="form-control" />
+                                    <small class="text-muted">URL-friendly version (auto-generated from title if empty)</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Author" class="form-label"></label>
+                                    <input asp-for="Author" class="form-control" value="Admin" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 form-check">
+                                    <input asp-for="IsPublished" class="form-check-input" checked />
+                                    <label asp-for="IsPublished" class="form-check-label">Publish immediately</label>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input asp-for="AllowComments" class="form-check-input" checked />
+                                    <label asp-for="AllowComments" class="form-check-label">Allow comments</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Create Post
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Tips for Great Blog Posts</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><i class="bi bi-info-circle text-primary"></i> Write catchy titles that grab attention</li>
+                        <li class="mb-2"><i class="bi bi-info-circle text-primary"></i> Use featured images to make posts visually appealing</li>
+                        <li class="mb-2"><i class="bi bi-info-circle text-primary"></i> Break content into sections with headings</li>
+                        <li class="mb-2"><i class="bi bi-info-circle text-primary"></i> Add relevant tags to help with SEO</li>
+                        <li><i class="bi bi-info-circle text-primary"></i> Update the slug to be URL-friendly (no spaces, lowercase)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

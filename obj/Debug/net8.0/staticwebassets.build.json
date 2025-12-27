@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "YinnvN6lXsfePbE2iVtvYa6kvvnHrzJIB/8OLmLP+Ec=",
+  "Hash": "92laWB4JgAZ21DvIUcZH62fZgx/wmqs/bXHId0ysPH4=",
   "Source": "ComBag",
   "BasePath": "_content/ComBag",
   "Mode": "Default",
@@ -2409,6 +2409,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/uploads/45f640b9-a763-467e-a52b-6daf0aa191a6_anime.jpg"
+    },
+    {
+      "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/57981e95-4237-48b3-acf6-09be0890e95b_gear_5.jpg",
+      "SourceId": "ComBag",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/kunal/Desktop/ComBag/wwwroot/",
+      "BasePath": "_content/ComBag",
+      "RelativePath": "uploads/57981e95-4237-48b3-acf6-09be0890e95b_gear_5.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/57981e95-4237-48b3-acf6-09be0890e95b_gear_5.jpg"
     },
     {
       "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/66ece46c-4332-47d0-a869-aed855628742_jjk.jpg",

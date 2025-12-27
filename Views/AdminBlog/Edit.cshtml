@@ -1,0 +1,254 @@
+@model ComBag.Models.BlogPost
+@{
+    ViewData["Title"] = "Edit Blog Post";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <h1 class="h2 mb-4">Edit Blog Post</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="FeaturedImageUrl" />
+                        <input type="hidden" asp-for="PublishedDate" />
+                        <input type="hidden" asp-for="ViewCount" />
+                        
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <div class="mb-3">
+                            <label asp-for="Title" class="form-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="BlogCategoryId" class="form-label"></label>
+                                    <select asp-for="BlogCategoryId" class="form-select" 
+                                            asp-items="ViewBag.Categories">
+                                        <option value="">-- Select Category --</option>
+                                    </select>
+                                    <span asp-validation-for="BlogCategoryId" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="featuredImage" class="form-label">Featured Image</label>
+                                    <div class="input-group">
+                                        <input type="file" name="featuredImage" class="form-control" accept="image/*" />
+                                        @if (!string.IsNullOrEmpty(Model.FeaturedImageUrl))
+                                        {
+                                            <a href="@Model.FeaturedImageUrl" target="_blank" 
+                                               class="btn btn-outline-info" title="View Current Image">
+                                                <i class="bi bi-image"></i>
+                                            </a>
+                                        }
+                                    </div>
+                                    <small class="text-muted">
+                                        @if (!string.IsNullOrEmpty(Model.FeaturedImageUrl))
+                                        {
+                                            <span>Current: @Model.FeaturedImageUrl.Split('/').Last()</span>
+                                        }
+                                        else
+                                        {
+                                            <span>Recommended: 1200x600 pixels</span>
+                                        }
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Excerpt" class="form-label"></label>
+                            <textarea asp-for="Excerpt" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="Excerpt" class="text-danger"></span>
+                            <small class="text-muted">Short summary displayed in blog listing (150-200 characters)</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Content" class="form-label"></label>
+                            <textarea asp-for="Content" class="form-control" rows="15"></textarea>
+                            <span asp-validation-for="Content" class="text-danger"></span>
+                            <small class="text-muted">Full blog post content</small>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Tags" class="form-label"></label>
+                                    <input asp-for="Tags" class="form-control" placeholder="ecommerce, shopping, tips" />
+                                    <span asp-validation-for="Tags" class="text-danger"></span>
+                                    <small class="text-muted">Comma separated tags (e.g., shopping, ecommerce, tips)</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Slug" class="form-label"></label>
+                                    <input asp-for="Slug" class="form-control" />
+                                    <span asp-validation-for="Slug" class="text-danger"></span>
+                                    <small class="text-muted">URL-friendly version (e.g., "my-blog-post-title")</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label asp-for="Author" class="form-label"></label>
+                                    <input asp-for="Author" class="form-control" />
+                                    <span asp-validation-for="Author" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 form-check">
+                                    <input asp-for="IsPublished" class="form-check-input" />
+                                    <label asp-for="IsPublished" class="form-check-label">Published</label>
+                                </div>
+                                <div class="mb-3 form-check">
+                                    <input asp-for="AllowComments" class="form-check-input" />
+                                    <label asp-for="AllowComments" class="form-check-label">Allow comments</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                <h6 class="mb-0">Post Statistics</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <small class="text-muted d-block">Published Date</small>
+                                        <strong>@Model.PublishedDate.ToString("MMMM dd, yyyy HH:mm")</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <small class="text-muted d-block">Last Updated</small>
+                                        <strong>@Model.LastUpdated.ToString("MMMM dd, yyyy HH:mm")</strong>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <small class="text-muted d-block">Total Views</small>
+                                        <strong>@Model.ViewCount</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+                                <a href="/blog/@Model.Slug" target="_blank" class="btn btn-outline-info ms-2">
+                                    <i class="bi bi-eye"></i> View Live
+                                </a>
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-save"></i> Update Post
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card mb-3">
+                <div class="card-header">
+                    <h6 class="mb-0">Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Create" class="btn btn-outline-primary">
+                            <i class="bi bi-plus-circle"></i> Create New Post
+                        </a>
+                        <a asp-controller="Blog" asp-action="Index" target="_blank" 
+                           class="btn btn-outline-info">
+                            <i class="bi bi-newspaper"></i> View Public Blog
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Editing Tips</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><i class="bi bi-info-circle text-primary"></i> Update the "Last Updated" date will be set to now</li>
+                        <li class="mb-2"><i class="bi bi-info-circle text-primary"></i> Changing the slug will break existing links</li>
+                        <li class="mb-2"><i class="bi bi-info-circle text-primary"></i> Unpublishing hides the post from public view</li>
+                        <li class="mb-2"><i class="bi bi-info-circle text-primary"></i> Use descriptive tags for better SEO</li>
+                        <li><i class="bi bi-info-circle text-primary"></i> Keep excerpts concise (150-200 characters)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            @if (!string.IsNullOrEmpty(Model.FeaturedImageUrl))
+            {
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="mb-0">Current Featured Image</h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <img src="@Model.FeaturedImageUrl" 
+                             class="img-fluid rounded" 
+                             alt="Current featured image"
+                             style="max-height: 200px;">
+                        <div class="mt-2">
+                            <a href="@Model.FeaturedImageUrl" target="_blank" 
+                               class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-box-arrow-up-right"></i> Open Full Size
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        // Auto-generate slug from title if slug is empty
+        document.addEventListener('DOMContentLoaded', function() {
+            const titleInput = document.querySelector('#Title');
+            const slugInput = document.querySelector('#Slug');
+            
+            if (titleInput && slugInput && !slugInput.value) {
+                titleInput.addEventListener('blur', function() {
+                    if (!slugInput.value) {
+                        const slug = this.value
+                            .toLowerCase()
+                            .replace(/[^a-z0-9\s-]/g, '')
+                            .replace(/\s+/g, '-')
+                            .replace(/-+/g, '-')
+                            .trim();
+                        slugInput.value = slug;
+                    }
+                });
+            }
+            
+            // Character counter for excerpt
+            const excerptInput = document.querySelector('#Excerpt');
+            if (excerptInput) {
+                const counter = document.createElement('small');
+                counter.className = 'form-text text-muted';
+                counter.textContent = `${excerptInput.value.length}/200 characters`;
+                excerptInput.parentNode.appendChild(counter);
+                
+                excerptInput.addEventListener('input', function() {
+                    counter.textContent = `${this.value.length}/200 characters`;
+                });
+            }
+        });
+    </script>
+}

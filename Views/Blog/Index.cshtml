@@ -1,0 +1,178 @@
+@model List<ComBag.Models.BlogPost>
+@using Microsoft.EntityFrameworkCore
+@inject ComBag.Data.ApplicationDbContext _context
+@{
+    ViewData["Title"] = "Blog";
+}
+<div class="container py-5">
+    <div class="row">
+        <!-- Blog Posts -->
+        <div class="col-lg-8">
+            <h1 class="mb-4">ComBag Blog</h1>
+            <p class="lead mb-5">Latest news, tips, and insights about our products</p>
+
+            @if (Model.Count == 0)
+            {
+                <div class="alert alert-info">
+                    No blog posts found.
+                </div>
+            }
+            else
+            {
+                foreach (var post in Model)
+                {
+                    <article class="card mb-4">
+                        @if (!string.IsNullOrEmpty(post.FeaturedImageUrl))
+                        {
+                            <img src="@post.FeaturedImageUrl" class="card-img-top" 
+                                 alt="@post.Title" style="height: 300px; object-fit: cover;">
+                        }
+                        
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="badge bg-primary">
+                                    @post.BlogCategory?.Name
+                                </span>
+                                <small class="text-muted">
+                                    @post.PublishedDate.ToString("MMMM dd, yyyy")
+                                </small>
+                            </div>
+                            
+                            <h2 class="card-title">
+                                <a asp-action="Details" asp-route-slug="@post.Slug" class="text-decoration-none">
+                                    @post.Title
+                                </a>
+                            </h2>
+                            
+                            @if (!string.IsNullOrEmpty(post.Excerpt))
+                            {
+                                <p class="card-text">@post.Excerpt</p>
+                            }
+                            else
+                            {
+                                <p class="card-text">@Html.Raw(post.Content.Length > 200 ? post.Content.Substring(0, 200) + "..." : post.Content)</p>
+                            }
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <div>
+                                    <i class="bi bi-person"></i> @post.Author
+                                    <i class="bi bi-eye ms-3"></i> @post.ViewCount views
+                                </div>
+                                <a asp-action="Details" asp-route-slug="@post.Slug" 
+                                   class="btn btn-outline-primary">
+                                    Read More
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                }
+                
+                <!-- Pagination -->
+                @if (ViewBag.TotalPages > 1)
+                {
+                    <nav aria-label="Blog pagination">
+                        <ul class="pagination justify-content-center">
+                            @if (ViewBag.CurrentPage > 1)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index" 
+                                       asp-route-page="@(ViewBag.CurrentPage - 1)"
+                                       asp-route-categoryId="@ViewBag.CurrentCategory"
+                                       asp-route-tag="@ViewBag.CurrentTag">
+                                        Previous
+                                    </a>
+                                </li>
+                            }
+                            
+                            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                            {
+                                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                                    <a class="page-link" asp-action="Index" 
+                                       asp-route-page="@i"
+                                       asp-route-categoryId="@ViewBag.CurrentCategory"
+                                       asp-route-tag="@ViewBag.CurrentTag">
+                                        @i
+                                    </a>
+                                </li>
+                            }
+                            
+                            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                            {
+                                <li class="page-item">
+                                    <a class="page-link" asp-action="Index" 
+                                       asp-route-page="@(ViewBag.CurrentPage + 1)"
+                                       asp-route-categoryId="@ViewBag.CurrentCategory"
+                                       asp-route-tag="@ViewBag.CurrentTag">
+                                        Next
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                }
+            }
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5>Categories</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <a asp-action="Index">All Categories</a>
+                        </li>
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <li class="list-group-item @(ViewBag.CurrentCategory == category.Id ? "active" : "")">
+                                <a asp-action="Index" asp-route-categoryId="@category.Id">
+                                    @category.Name
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+         <div class="card mb-4">
+    <div class="card-header">
+        <h5>Recent Posts</h5>
+    </div>
+    <div class="card-body">
+        @{
+            var recentPosts = _context.BlogPosts
+                .Where(b => b.IsPublished)
+                .OrderByDescending(b => b.PublishedDate)
+                .Take(5)
+                .ToList(); // ✅ Use ToList() instead of ToListAsync() in view
+        }
+        
+        @if (recentPosts.Any())
+        {
+            foreach (var post in recentPosts)
+            {
+                <div class="mb-3">
+                    <h6>
+                        <a asp-action="Details" asp-route-slug="@post.Slug">
+                            @post.Title
+                        </a>
+                    </h6>
+                    <small class="text-muted">
+                        @post.PublishedDate.ToString("MMM dd")
+                    </small>
+                </div>
+            }
+        }
+        else
+        {
+            <p class="text-muted">No recent posts</p>
+        }
+    </div>
+</div>
+        </div>
+    </div>
+</div>
+
+@inject ComBag.Data.ApplicationDbContext _context

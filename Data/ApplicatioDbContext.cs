@@ -18,6 +18,9 @@ namespace ComBag.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
+           public DbSet<BlogPost> BlogPosts { get; set; }
+    public DbSet<BlogCategory> BlogCategories { get; set; }
+    public DbSet<BlogComment> BlogComments { get; set; }
         // ✅ Optional: Override OnModelCreating if you need to configure relationships
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -45,6 +48,25 @@ namespace ComBag.Data
                 .WithMany()
                 .HasForeignKey(ci => ci.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+        // Blog relationships
+
+        builder.Entity<BlogPost>()
+            .HasOne(p => p.BlogCategory)
+            .WithMany(c => c.BlogPosts)
+            .HasForeignKey(p => p.BlogCategoryId)
+            .OnDelete(DeleteBehavior.SetNull);
+            
+        builder.Entity<BlogComment>()
+            .HasOne(c => c.BlogPost)
+            .WithMany()
+            .HasForeignKey(c => c.BlogPostId)
+            .OnDelete(DeleteBehavior.Cascade);
+            
+        builder.Entity<BlogComment>()
+            .HasOne(c => c.ParentComment)
+            .WithMany(c => c.Replies)
+            .HasForeignKey(c => c.ParentCommentId)
+            .OnDelete(DeleteBehavior.Restrict);
             }
     }
 }
