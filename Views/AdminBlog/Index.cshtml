@@ -118,10 +118,11 @@
                                     <td>@post.ViewCount</td>
                                     <td>
                                         <div class="btn-group btn-group-sm" role="group">
-                                            <a href="/blog/@post.Slug" target="_blank" 
-                                               class="btn btn-outline-info" title="View">
-                                                <i class="bi bi-eye"></i>
-                                            </a>
+                                        <a asp-controller="Blog" asp-action="Details" 
+   asp-route-slug="@post.Slug" 
+   target="_blank" class="btn btn-outline-info" title="View">
+    <i class="bi bi-eye"></i>
+</a>
                                             <a asp-action="Edit" asp-route-id="@post.Id" 
                                                class="btn btn-outline-primary" title="Edit">
                                                 <i class="bi bi-pencil"></i>

@@ -1,0 +1,175 @@
+@model ComBag.Models.BlogPost
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container py-5">
+    <div class="row">
+        <!-- Main Content -->
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Blog" asp-action="Index">Blog</a></li>
+                    <li class="breadcrumb-item active">@Model.Title</li>
+                </ol>
+            </nav>
+
+            <article class="blog-post">
+                <!-- Header -->
+                <header class="mb-4">
+                    @if (!string.IsNullOrEmpty(Model.BlogCategory?.Name))
+                    {
+                        <span class="badge bg-primary mb-2">@Model.BlogCategory.Name</span>
+                    }
+                    
+                    <h1 class="display-5 fw-bold">@Model.Title</h1>
+                    
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-person-circle me-2"></i>
+                            <span class="me-3">@Model.Author</span>
+                            <i class="bi bi-calendar me-2"></i>
+                            <span>@Model.PublishedDate.ToString("MMMM dd, yyyy")</span>
+                        </div>
+                        <div>
+                            <i class="bi bi-eye me-1"></i>
+                            <span>@Model.ViewCount views</span>
+                        </div>
+                    </div>
+                </header>
+
+                <!-- Featured Image -->
+                @if (!string.IsNullOrEmpty(Model.FeaturedImageUrl))
+                {
+                    <div class="mb-5">
+                        <img src="@Model.FeaturedImageUrl" 
+                             class="img-fluid rounded" 
+                             alt="@Model.Title"
+                             style="max-height: 500px; width: 100%; object-fit: cover;">
+                    </div>
+                }
+
+                <!-- Content -->
+                <div class="blog-content mb-5">
+                    @Html.Raw(Model.Content.Replace("\n", "<br>"))
+                </div>
+
+                <!-- Tags -->
+                @if (!string.IsNullOrEmpty(Model.Tags))
+                {
+                    <div class="mb-5">
+                        <h5 class="mb-3">Tags</h5>
+                        <div>
+                            @foreach (var tag in Model.Tags.Split(',').Select(t => t.Trim()).Where(t => !string.IsNullOrEmpty(t)))
+                            {
+                                <a asp-controller="Blog" asp-action="Index" asp-route-tag="@tag" 
+                                   class="badge bg-secondary text-decoration-none me-2">
+                                    @tag
+                                </a>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Navigation -->
+                <div class="d-flex justify-content-between border-top pt-4">
+                    <a asp-controller="Blog" asp-action="Index" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-left"></i> Back to Blog
+                    </a>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-house"></i> Go to Home
+                    </a>
+                </div>
+            </article>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="col-lg-4">
+            <!-- Categories -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Categories</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <a asp-controller="Blog" asp-action="Index">All Categories</a>
+                        </li>
+                        @{
+                           var categories = _context.BlogCategories.ToList();
+                        }
+                        @foreach (var category in ViewBag.Categories)
+                        {
+                            <li class="mb-2">
+                                <a asp-controller="Blog" asp-action="Index" asp-route-categoryId="@category.Id">
+                                    @category.Name
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Related Posts -->
+            @if (ViewBag.RelatedPosts != null && ((List<BlogPost>)ViewBag.RelatedPosts).Any())
+            {
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Related Posts</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var relatedPost in (List<BlogPost>)ViewBag.RelatedPosts)
+                        {
+                            <div class="mb-3">
+                                <h6>
+                                    <a asp-controller="Blog" asp-action="Details" asp-route-slug="@relatedPost.Slug">
+                                        @relatedPost.Title
+                                    </a>
+                                </h6>
+                                <small class="text-muted">
+                                    @relatedPost.PublishedDate.ToString("MMM dd")
+                                </small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- Share Buttons -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Share This Post</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex gap-2">
+                        <a href="https://www.facebook.com/sharer/sharer.php?u=@Context.Request.Scheme://@Context.Request.Host/blog/@Model.Slug" 
+                           target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-facebook"></i> Facebook
+                        </a>
+                        <a href="https://twitter.com/intent/tweet?url=@Context.Request.Scheme://@Context.Request.Host/blog/@Model.Slug&text=@Model.Title" 
+                           target="_blank" class="btn btn-outline-info btn-sm">
+                            <i class="bi bi-twitter"></i> Twitter
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@inject ComBag.Data.ApplicationDbContext _context
+
+@section Scripts {
+    <script>
+        // Update view count via AJAX (optional)
+        document.addEventListener('DOMContentLoaded', function() {
+            fetch('/Blog/UpdateViewCount?slug=@Model.Slug', {
+                method: 'POST',
+                headers: {
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                }
+            });
+        });
+    </script>
+}

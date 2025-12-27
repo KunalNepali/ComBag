@@ -20,7 +20,6 @@ namespace ComBag.Controllers
         {
             var pageSize = 6;
             
-            // ✅ FIXED: Start with OrderByDescending first
             IQueryable<BlogPost> query = _context.BlogPosts
                 .Include(b => b.BlogCategory)
                 .Where(b => b.IsPublished)
@@ -35,7 +34,6 @@ namespace ComBag.Controllers
             {
                 query = query.Where(b => b.Tags != null && b.Tags.Contains(tag));
             }
-            var orderedQuery = query.OrderByDescending(b => b.PublishedDate);
 
             var totalPosts = await query.CountAsync();
             var posts = await query
@@ -79,7 +77,25 @@ namespace ComBag.Controllers
                 .Take(3)
                 .ToListAsync();
 
+            // ✅ FIXED: Add the missing return statement
+            ViewBag.Categories = await _context.BlogCategories.ToListAsync();
             return View(blogPost);
+        }
+
+        // POST: /Blog/UpdateViewCount
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateViewCount(string slug)
+        {
+            var blogPost = await _context.BlogPosts
+                .FirstOrDefaultAsync(b => b.Slug == slug);
+    
+            if (blogPost != null)
+            {
+                blogPost.ViewCount++;
+                await _context.SaveChangesAsync();
+            }   
+            return Ok(); 
         }
     }
 }
