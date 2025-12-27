@@ -24,12 +24,17 @@ namespace ComBag.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+             if (string.IsNullOrEmpty(userId))
+    {
+        return RedirectToAction("Login", "Account");
+    }
             var orders = await _context.Orders
                 .Where(o => o.UserId == userId)
                 .OrderByDescending(o => o.OrderDate)
                 .Include(o => o.OrderItems)
                     .ThenInclude(oi => oi.Product)
                 .ToListAsync();
+    Console.WriteLine($"Found {orders.Count} orders for user {userId}");
 
             return View(orders);
         }
@@ -38,10 +43,10 @@ namespace ComBag.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var order = await _context.Orders
-                .Include(o => o.OrderItems)
-                    .ThenInclude(oi => oi.Product)
-                .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
-
+   .Include(o => o.User)
+        .Include(o => o.OrderItems)
+            .ThenInclude(oi => oi.Product)
+        .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId);
             if (order == null)
             {
                 return NotFound();
