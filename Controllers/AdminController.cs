@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using ComBag.Data;
 using ComBag.Models;
+using ComBag.Models.ViewModels; 
 
 namespace ComBag.Controllers
 {
@@ -33,14 +35,5 @@ namespace ComBag.Controllers
 
             return View(stats);
         }
-    }
-
-    public class AdminDashboardViewModel
-    {
-        public int TotalProducts { get; set; }
-        public int TotalOrders { get; set; }
-        public int TotalUsers { get; set; }
-        public int PendingOrders { get; set; }
-        public List<Order> RecentOrders { get; set; }
     }
 }

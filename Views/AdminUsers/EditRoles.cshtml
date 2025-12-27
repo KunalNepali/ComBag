@@ -1,0 +1,63 @@
+@model ComBag.Controllers.EditRolesViewModel
+@{
+    ViewData["Title"] = "Edit User Roles";
+    Layout = "_AdminLayout";
+}
+
+<div class="container-fluid">
+    <h1 class="h2 mb-4">Edit Roles for @Model.UserEmail</h1>
+
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <form asp-action="EditRoles" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.UserId" />
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Select Roles</label>
+                            @foreach (var role in Model.AllRoles)
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input" 
+                                           type="checkbox" 
+                                           name="selectedRoles" 
+                                           value="@role" 
+                                           id="role-@role"
+                                           @(Model.UserRoles.Contains(role) ? "checked" : "")>
+                                    <label class="form-check-label" for="role-@role">
+                                        @role
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a asp-action="Details" asp-route-id="@Model.UserId" 
+                               class="btn btn-outline-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save"></i> Update Roles
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">Role Information</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled small">
+                        <li class="mb-2"><i class="bi bi-info-circle text-primary"></i> <strong>Admin</strong>: Full access to everything</li>
+                        <li class="mb-2"><i class="bi bi-info-circle text-primary"></i> <strong>Customer</strong>: Can browse, purchase, view orders</li>
+                        <li><i class="bi bi-info-circle text-primary"></i> A user can have multiple roles</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

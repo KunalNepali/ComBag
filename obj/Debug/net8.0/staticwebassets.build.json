@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "S821Bo1fcP/14j4OKvTo/l3R5AtHr5NYAl3/+PxYjKQ=",
+  "Hash": "p66P1gJpzjNPCOqdUETojZfcMouSA9VGb3YQlPJi/FE=",
   "Source": "ComBag",
   "BasePath": "_content/ComBag",
   "Mode": "Default",
@@ -2352,6 +2352,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/uploads/4d6a04f5-9e6c-4650-a161-b2cfee9bc05f_James_Gosling_2008.jpg"
+    },
+    {
+      "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png",
+      "SourceId": "ComBag",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/kunal/Desktop/ComBag/wwwroot/",
+      "BasePath": "_content/ComBag",
+      "RelativePath": "uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/a2b43626-4515-433b-94b9-743113a0df41_sprite_sheet_walk_right 1.png"
     }
   ]
 }
