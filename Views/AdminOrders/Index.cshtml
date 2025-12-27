@@ -136,13 +136,21 @@
     <script>
         function updateStatus(orderId, status) {
             if (confirm(`Change order #${orderId} status to "${status}"?`)) {
-                $.post('/AdminOrders/UpdateStatus', { id: orderId, status: status })
-                    .done(function() {
-                        location.reload();
-                    })
-                    .fail(function() {
-                        alert('Failed to update status');
-                    });
+                // ✅ Make sure the URL is correct
+                $.post('/AdminOrders/UpdateStatus', { 
+                    id: orderId, 
+                    status: status 
+                })
+                .done(function() {
+                    // Reload the page to show updated status
+                    location.reload();
+                })
+                .fail(function(xhr, status, error) {
+                    // Log the error to console for debugging
+                    console.error('Update failed:', error);
+                    console.log('Response:', xhr.responseText);
+                    alert('Failed to update status. Check console for details.');
+                });
             }
         }
     </script>

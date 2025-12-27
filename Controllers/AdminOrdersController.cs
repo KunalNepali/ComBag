@@ -139,7 +139,7 @@ namespace ComBag.Controllers
             await _context.SaveChangesAsync();
 
             TempData["Success"] = $"Order #{id} status updated to {status}";
-            return RedirectToAction(nameof(Details), new { id });
+            return Ok();
         }
 
         private bool OrderExists(int id)
