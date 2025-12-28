@@ -1,0 +1,188 @@
+@model ComBag.Controllers.ServiceInquiryViewModel
+@{
+    ViewData["Title"] = "Repair Service Inquiry";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">
+                        <i class="bi bi-tools"></i> @ViewData["Title"]
+                        @if (ViewBag.ServiceName != null)
+                        {
+                            <span class="h5 d-block mt-1">for @ViewBag.ServiceName</span>
+                        }
+                    </h3>
+                </div>
+                
+                <div class="card-body">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle"></i> @TempData["Success"]
+                        </div>
+                    }
+                    
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle"></i> @TempData["Error"]
+                        </div>
+                    }
+
+                    <form asp-action="Inquiry" method="post" enctype="multipart/form-data">
+                        @Html.AntiForgeryToken()
+                        
+                        <input type="hidden" asp-for="RepairServiceId" />
+                        
+                        <div class="row">
+                            <!-- Personal Information -->
+                            <div class="col-md-6 mb-3">
+                                <h5 class="border-bottom pb-2 mb-3">
+                                    <i class="bi bi-person"></i> Contact Information
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="FullName" class="form-label">Full Name *</label>
+                                    <input asp-for="FullName" class="form-control" />
+                                    <span asp-validation-for="FullName" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="Email" class="form-label">Email *</label>
+                                    <input asp-for="Email" type="email" class="form-control" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="PhoneNumber" class="form-label">Phone Number *</label>
+                                    <input asp-for="PhoneNumber" class="form-control" />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                            
+                            <!-- Service Information -->
+                            <div class="col-md-6 mb-3">
+                                <h5 class="border-bottom pb-2 mb-3">
+                                    <i class="bi bi-bag"></i> Service Details
+                                </h5>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="RepairServiceId" class="form-label">Select Service</label>
+                                    <select asp-for="RepairServiceId" class="form-select" asp-items="@(new SelectList(ViewBag.Services, "Id", "Name"))">
+                                        <option value="">-- Select a service --</option>
+                                    </select>
+                                    <span asp-validation-for="RepairServiceId" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="BagType" class="form-label">Bag Type/Brand (Optional)</label>
+                                    <input asp-for="BagType" class="form-control" placeholder="e.g., Louis Vuitton, Leather Backpack, etc." />
+                                    <span asp-validation-for="BagType" class="text-danger"></span>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="DamageImage" class="form-label">Upload Image of Damage (Optional)</label>
+                                    <input asp-for="DamageImage" type="file" class="form-control" accept="image/*" />
+                                    <div class="form-text">Max size: 5MB. Supported formats: JPG, PNG, GIF</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Description -->
+                        <div class="mb-4">
+                            <h5 class="border-bottom pb-2 mb-3">
+                                <i class="bi bi-chat-text"></i> Description of Damage/Customization *
+                            </h5>
+                            
+                            <div class="mb-3">
+                                <label asp-for="Description" class="form-label">Please describe in detail:</label>
+                                <textarea asp-for="Description" class="form-control" rows="5" 
+                                          placeholder="Describe the damage, what needs to be repaired, any specific requirements, etc."></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="@Url.Action("Index", "Repair")" class="btn btn-outline-secondary me-md-2">
+                                <i class="bi bi-arrow-left"></i> Back to Services
+                            </a>
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-send"></i> Submit Inquiry
+                            </button>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="card-footer text-muted">
+                    <small>
+                        <i class="bi bi-info-circle"></i> We'll contact you within 24 hours to discuss your repair needs and provide a quote.
+                    </small>
+                </div>
+            </div>
+            
+            <!-- Additional Information -->
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h5><i class="bi bi-question-circle"></i> What to Expect</h5>
+                    <div class="row mt-3">
+                        <div class="col-md-4">
+                            <div class="text-center p-3">
+                                <i class="bi bi-chat-dots text-primary" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2">1. Initial Consultation</h6>
+                                <p class="small">We'll review your inquiry and contact you to discuss details.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3">
+                                <i class="bi bi-cash-coin text-primary" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2">2. Free Quote</h6>
+                                <p class="small">We provide a detailed quote with pricing and timeline.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="text-center p-3">
+                                <i class="bi bi-tools text-primary" style="font-size: 2rem;"></i>
+                                <h6 class="mt-2">3. Professional Repair</h6>
+                                <p class="small">Our experts repair your bag with care and precision.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    
+    <script>
+        $(document).ready(function() {
+            // Pre-select service if coming from service page
+            const urlParams = new URLSearchParams(window.location.search);
+            const serviceId = urlParams.get('serviceId');
+            if (serviceId) {
+                $('#RepairServiceId').val(serviceId);
+            }
+            
+            // Image preview (optional enhancement)
+            $('#DamageImage').change(function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        // You could show a preview here
+                        console.log('Image selected:', file.name);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+    </script>
+}

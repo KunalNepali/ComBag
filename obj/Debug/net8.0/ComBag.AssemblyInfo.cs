@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ComBag")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7e914fccd6b4008ee13c417336cee4a2d293bf4d")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+fc1ade0e0fc5ee411d3ad332baf45546854badef")]
 [assembly: System.Reflection.AssemblyProductAttribute("ComBag")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ComBag")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

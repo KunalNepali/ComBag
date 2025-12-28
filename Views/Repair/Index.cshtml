@@ -1,0 +1,96 @@
+@model List<ComBag.Models.RepairService>
+@{
+    ViewData["Title"] = "Bag Repair Services";
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4">Bag Repair Services</h1>
+        <p class="lead">Professional repair and restoration services for your favorite bags</p>
+    </div>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info">
+            <h4 class="alert-heading">No Services Available</h4>
+            <p>Check back soon for our repair services.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row">
+            @foreach (var service in Model)
+            {
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        @if (!string.IsNullOrEmpty(service.ImageUrl))
+                        {
+                            <img src="@service.ImageUrl" class="card-img-top" alt="@service.Name" style="height: 200px; object-fit: cover;">
+                        }
+                        else
+                        {
+                            <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                                <i class="bi bi-tools" style="font-size: 4rem; color: #6c757d;"></i>
+                            </div>
+                        }
+                        
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">@service.Name</h5>
+                            <p class="card-text flex-grow-1">@service.Description</p>
+                            
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="h4 text-primary">Starting at $@service.StartingPrice.ToString("0.00")</span>
+                                    @if (service.EstimatedTimeHours.HasValue)
+                                    {
+                                        <span class="badge bg-info">
+                                            <i class="bi bi-clock"></i> @service.EstimatedTimeHours.Value hours
+                                        </span>
+                                    }
+                                </div>
+                                
+                                <a href="@Url.Action("Inquiry", "Repair", new { serviceId = service.Id })" 
+                                   class="btn btn-primary btn-lg w-100">
+                                    <i class="bi bi-envelope"></i> Request Quote
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body text-center">
+                <h4>Don't see what you need?</h4>
+                <p class="mb-3">We offer custom repair solutions for all types of bags and luggage.</p>
+                <a href="@Url.Action("Inquiry", "Repair")" class="btn btn-outline-primary btn-lg">
+                    <i class="bi bi-chat-dots"></i> Contact Us for Custom Service
+                </a>
+            </div>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .card-img-top {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .badge {
+            font-size: 0.9rem;
+            padding: 0.5em 0.8em;
+        }
+    </style>
+}

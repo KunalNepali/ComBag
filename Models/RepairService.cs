@@ -17,6 +17,15 @@ namespace ComBag.Models
         [Display(Name = "Description")]
         public string Description { get; set; }
 
+         [Column(TypeName = "decimal(18,2)")]
+        [Display(Name = "Starting Price")]
+        public decimal StartingPrice { get; set; }
+
+        [Column(TypeName = "decimal(18,2)")]
+        [Display(Name = "Estimated Time (hours)")]
+        public decimal? EstimatedTimeHours { get; set; }
+
+
         [Required(ErrorMessage = "Price range is required")]
         [StringLength(100, ErrorMessage = "Price range cannot exceed 100 characters")]
         [Display(Name = "Estimated Price Range")]
@@ -30,6 +39,9 @@ namespace ComBag.Models
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; } = true;
 
+        // Add these properties that are referenced in the view
+        public string? ImageUrl { get; set; }
+
         [Display(Name = "Sort Order")]
         public int SortOrder { get; set; } = 0;
 
@@ -40,8 +52,11 @@ namespace ComBag.Models
         [Display(Name = "Icon Class")]
         [StringLength(50)]
         public string IconClass { get; set; } = "bi-tools";
+        
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public ICollection<ServiceInquiry> ServiceInquiries { get; set; } = new List<ServiceInquiry>();
+
     }
 }
