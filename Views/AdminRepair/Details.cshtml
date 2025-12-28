@@ -38,21 +38,33 @@
                             <p class="text-muted">@Model.Description</p>
                         </dd>
                         
-                        <dt class="col-sm-3">Starting Price</dt>
+                        <dt class="col-sm-3">Price Range</dt>
                         <dd class="col-sm-9">
-                            <span class="badge bg-primary fs-6">$@Model.StartingPrice.ToString("0.00")</span>
+                            @if (!string.IsNullOrEmpty(Model.PriceRange))
+                            {
+                                <span class="badge bg-primary fs-6">@Model.PriceRange</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Contact for quote</span>
+                            }
                         </dd>
                         
-                        <dt class="col-sm-3">Estimated Time</dt>
+                        <dt class="col-sm-3">Duration</dt>
                         <dd class="col-sm-9">
-                            @if (Model.EstimatedTimeHours.HasValue)
+                            @if (!string.IsNullOrEmpty(Model.Duration))
                             {
-                                <span class="badge bg-info">@Model.EstimatedTimeHours.Value hours</span>
+                                <span class="badge bg-info">@Model.Duration</span>
                             }
                             else
                             {
                                 <span class="text-muted">Not specified</span>
                             }
+                        </dd>
+                        
+                        <dt class="col-sm-3">Category</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-secondary">@Model.Category</span>
                         </dd>
                         
                         <dt class="col-sm-3">Status</dt>
@@ -69,6 +81,11 @@
                         
                         <dt class="col-sm-3">Sort Order</dt>
                         <dd class="col-sm-9">@Model.SortOrder</dd>
+                        
+                        <dt class="col-sm-3">Icon Class</dt>
+                        <dd class="col-sm-9">
+                            <i class="bi @Model.IconClass"></i> <code>@Model.IconClass</code>
+                        </dd>
                         
                         <dt class="col-sm-3">Created</dt>
                         <dd class="col-sm-9">@Model.CreatedAt.ToString("MMM dd, yyyy HH:mm")</dd>
@@ -104,24 +121,27 @@
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-4">
-                        <i class="bi bi-tools display-1 text-primary"></i>
+                        <i class="bi @Model.IconClass display-1 text-primary"></i>
                     </div>
                     
                     <div class="list-group list-group-flush">
                         <div class="list-group-item d-flex justify-content-between align-items-center">
                             <span>Total Inquiries</span>
                             <span class="badge bg-primary rounded-pill">
-                                <!-- You'll need to get this from your database -->
-                                0
+                                @Model.ServiceInquiries?.Count ?? 0
                             </span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center">
                             <span>Pending Inquiries</span>
-                            <span class="badge bg-warning rounded-pill">0</span>
+                            <span class="badge bg-warning rounded-pill">
+                                @Model.ServiceInquiries?.Count(si => si.Status == "New" || si.Status == "In Progress") ?? 0
+                            </span>
                         </div>
                         <div class="list-group-item d-flex justify-content-between align-items-center">
                             <span>Completed Jobs</span>
-                            <span class="badge bg-success rounded-pill">0</span>
+                            <span class="badge bg-success rounded-pill">
+                                @Model.ServiceInquiries?.Count(si => si.Status == "Completed") ?? 0
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -153,7 +173,7 @@
     </div>
 </div>
 
-<!-- Delete Modal (same as in Services.cshtml) -->
+<!-- Delete Modal -->
 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">

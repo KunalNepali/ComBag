@@ -20,7 +20,7 @@
             Edit Service Details
         </div>
         <div class="card-body">
-            <form asp-action="Edit" method="post">
+            <form asp-action="Edit" method="post" enctype="multipart/form-data">
                 @Html.AntiForgeryToken()
                 <input type="hidden" asp-for="Id" />
                 
@@ -40,15 +40,15 @@
                         
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label asp-for="StartingPrice" class="form-label">Starting Price ($) *</label>
-                                <input asp-for="StartingPrice" class="form-control" type="number" step="0.01" />
-                                <span asp-validation-for="StartingPrice" class="text-danger"></span>
+                                <label asp-for="PriceRange" class="form-label">Price Range</label>
+                                <input asp-for="PriceRange" class="form-control" placeholder="e.g., $50 - $150 or Contact for quote" />
+                                <span asp-validation-for="PriceRange" class="text-danger"></span>
                             </div>
                             
                             <div class="col-md-6 mb-3">
-                                <label asp-for="EstimatedTimeHours" class="form-label">Estimated Time (hours)</label>
-                                <input asp-for="EstimatedTimeHours" class="form-control" type="number" step="0.5" />
-                                <span asp-validation-for="EstimatedTimeHours" class="text-danger"></span>
+                                <label asp-for="Duration" class="form-label">Duration</label>
+                                <input asp-for="Duration" class="form-control" placeholder="e.g., 2-3 days, 1 week, 4-6 hours" />
+                                <span asp-validation-for="Duration" class="text-danger"></span>
                             </div>
                         </div>
                     </div>
@@ -64,9 +64,39 @@
                                 </div>
                                 
                                 <div class="mb-3">
-                                    <label asp-for="ImageUrl" class="form-label">Image URL</label>
-                                    <input asp-for="ImageUrl" class="form-control" />
-                                    <small class="text-muted">Optional: URL for service image</small>
+                                    <label asp-for="Category" class="form-label">Category</label>
+                                    <input asp-for="Category" class="form-control" />
+                                    <small class="text-muted">e.g., Repair, Restoration, Customization</small>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label asp-for="IconClass" class="form-label">Icon Class</label>
+                                    <input asp-for="IconClass" class="form-control" />
+                                    <small class="text-muted">Bootstrap icon class (e.g., bi-tools, bi-bag, bi-scissors)</small>
+                                </div>
+                                
+                                <!-- Current Image -->
+                                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                {
+                                    <div class="mb-3">
+                                        <label class="form-label">Current Image</label>
+                                        <div>
+                                            <img src="@Model.ImageUrl" alt="Current image" class="img-thumbnail" style="max-height: 100px;" />
+                                            <div class="form-check mt-2">
+                                                <input class="form-check-input" type="checkbox" name="removeImage" id="removeImage" value="true">
+                                                <label class="form-check-label" for="removeImage">
+                                                    Remove current image
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                
+                                <!-- New Image Upload -->
+                                <div class="mb-3">
+                                    <label class="form-label">New Image (Optional)</label>
+                                    <input type="file" class="form-control" name="imageFile" accept="image/*">
+                                    <small class="text-muted">Upload JPG, PNG, GIF or WebP (Max 5MB)</small>
                                 </div>
                                 
                                 <div class="form-check form-switch mb-3">
