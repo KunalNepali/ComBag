@@ -26,10 +26,22 @@ namespace ComBag.Models
         [Display(Name = "Order Status")]
         public string Status { get; set; } = "Pending";
 
-        [Required]
-        [StringLength(20)]
-        [Display(Name = "Payment Method")]
-        public string PaymentMethod { get; set; } = "COD";
+    // Payment Information
+    [StringLength(20)]
+    [Display(Name = "Payment Method")]
+    public string PaymentMethod { get; set; } = "COD"; // COD, Esewa, Khalti, BankTransfer
+    
+    [Display(Name = "Payment Status")]
+    [StringLength(20)]
+    public string PaymentStatus { get; set; } = "Pending"; // Pending, Paid, Failed, Refunded
+    
+    [Display(Name = "Payment Transaction ID")]
+    [StringLength(100)]
+    public string? PaymentTransactionId { get; set; }
+    
+    [Display(Name = "Payment Date")]
+    public DateTime? PaymentDate { get; set; }
+    
 
         [Required(ErrorMessage = "Shipping address is required")]
         [StringLength(200, ErrorMessage = "Address cannot exceed 200 characters")]

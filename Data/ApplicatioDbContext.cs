@@ -19,8 +19,10 @@ namespace ComBag.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<CartItem> CartItems { get; set; }
            public DbSet<BlogPost> BlogPosts { get; set; }
-    public DbSet<BlogCategory> BlogCategories { get; set; }
-    public DbSet<BlogComment> BlogComments { get; set; }
+        public DbSet<BlogCategory> BlogCategories { get; set; }
+        public DbSet<BlogComment> BlogComments { get; set; }
+        public DbSet<RepairService> RepairServices { get; set; }
+        public DbSet<ServiceInquiry> ServiceInquiries { get; set; }
         // ✅ Optional: Override OnModelCreating if you need to configure relationships
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -67,6 +69,18 @@ namespace ComBag.Data
             .WithMany(c => c.Replies)
             .HasForeignKey(c => c.ParentCommentId)
             .OnDelete(DeleteBehavior.Restrict);
+              // Phase 2 relationships
+             builder.Entity<ServiceInquiry>()
+            .HasOne(si => si.User)
+            .WithMany()
+            .HasForeignKey(si => si.UserId)
+            .OnDelete(DeleteBehavior.SetNull);
+
+             builder.Entity<ServiceInquiry>()
+            .HasOne(si => si.RepairService)
+            .WithMany()
+            .HasForeignKey(si => si.RepairServiceId)
+            .OnDelete(DeleteBehavior.SetNull);
             }
     }
 }

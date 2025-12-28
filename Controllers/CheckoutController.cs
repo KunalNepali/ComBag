@@ -111,7 +111,8 @@ public async Task<IActionResult> PlaceOrder(CheckoutViewModel model)
             OrderDate = DateTime.UtcNow,
             TotalAmount = cart.Sum(item => item.Subtotal),
             Status = "Pending",
-            PaymentMethod = "COD",
+            PaymentMethod = model.PaymentMethod,
+            PaymentStatus = "Pending",
             ShippingAddress = model.ShippingAddress,
             ShippingCity = model.ShippingCity,
             ShippingState = model.ShippingState,
@@ -123,6 +124,17 @@ public async Task<IActionResult> PlaceOrder(CheckoutViewModel model)
         _context.Orders.Add(order);
         await _context.SaveChangesAsync(); // Get Order ID
         Console.WriteLine($"✅ Order saved with ID: {order.Id}");
+            // Add initial tracking entry
+    var tracking = new OrderTracking
+    {
+        OrderId = order.Id,
+        Status = "Pending",
+        Description = "Order placed successfully",
+        CreatedBy = "System",
+        NotifyCustomer = true
+    };
+    _context.OrderTracking.Add(tracking);
+
 
         // Create order items
         foreach (var cartItem in cart)
@@ -148,6 +160,13 @@ public async Task<IActionResult> PlaceOrder(CheckoutViewModel model)
 
         await _context.SaveChangesAsync();
         Console.WriteLine($"✅ Order items saved");
+
+    // Handle payment based on method
+    if (model.PaymentMethod != "COD")
+    {
+        return await HandleOnlinePayment(order, model.PaymentMethod);
+    }
+
 
         // Clear cart
         HttpContext.Session.Remove(CartSessionKey);
