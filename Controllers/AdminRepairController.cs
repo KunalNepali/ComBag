@@ -3,7 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 using ComBag.Data;
 using ComBag.Models;
-using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace ComBag.Controllers
 {
@@ -28,50 +29,80 @@ namespace ComBag.Controllers
             return View(services);
         }
 
-        // GET: AdminRepair/CreateService
-        public IActionResult CreateService()
+        // GET: AdminRepair/Create
+        public IActionResult Create()
         {
             return View();
         }
 
-        // POST: AdminRepair/CreateService
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateService(RepairService service)
+// POST: AdminRepair/Create
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> Create(RepairService repairService)
+{
+    Console.WriteLine("=== CREATE POST CALLED ===");
+    Console.WriteLine($"Model is null: {repairService == null}");
+    
+    if (!ModelState.IsValid)
+    {
+        Console.WriteLine($"❌ ModelState is INVALID. Error count: {ModelState.ErrorCount}");
+        foreach (var state in ModelState)
         {
-            if (ModelState.IsValid)
+            foreach (var error in state.Value.Errors)
             {
-                service.CreatedAt = DateTime.UtcNow;
-                service.UpdatedAt = DateTime.UtcNow;
-
-                _context.Add(service);
-                await _context.SaveChangesAsync();
-
-                TempData["Success"] = "Service created successfully!";
-                return RedirectToAction(nameof(Services));
+                Console.WriteLine($"   Field '{state.Key}': {error.ErrorMessage}");
             }
-
-            return View(service);
         }
+        return View(repairService);
+    }
+    
+    Console.WriteLine("✅ ModelState is VALID");
+    Console.WriteLine($"Name: {repairService.Name}");
+    Console.WriteLine($"StartingPrice: {repairService.StartingPrice}");
+    
+    try
+    {
+        repairService.CreatedAt = DateTime.UtcNow;
+        repairService.UpdatedAt = DateTime.UtcNow;
+        
+        _context.Add(repairService);
+        await _context.SaveChangesAsync();
+        
+        Console.WriteLine($"✅ Service created with ID: {repairService.Id}");
+        TempData["Success"] = "Repair service created successfully!";
+        return RedirectToAction(nameof(Services));
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ ERROR: {ex.Message}");
+        ModelState.AddModelError("", "Error creating service: " + ex.Message);
+        return View(repairService);
+    }
+}
 
-        // GET: AdminRepair/EditService/5
-        public async Task<IActionResult> EditService(int id)
+        // GET: AdminRepair/Edit/5
+        public async Task<IActionResult> Edit(int? id)
         {
-            var service = await _context.RepairServices.FindAsync(id);
-            if (service == null)
+            if (id == null)
             {
                 return NotFound();
             }
 
-            return View(service);
+            var repairService = await _context.RepairServices.FindAsync(id);
+            if (repairService == null)
+            {
+                return NotFound();
+            }
+            
+            return View(repairService);
         }
 
-        // POST: AdminRepair/EditService/5
+        // POST: AdminRepair/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditService(int id, RepairService service)
+        public async Task<IActionResult> Edit(int id, RepairService repairService)
         {
-            if (id != service.Id)
+            if (id != repairService.Id)
             {
                 return NotFound();
             }
@@ -80,15 +111,15 @@ namespace ComBag.Controllers
             {
                 try
                 {
-                    service.UpdatedAt = DateTime.UtcNow;
-                    _context.Update(service);
+                    repairService.UpdatedAt = DateTime.UtcNow;
+                    _context.Update(repairService);
                     await _context.SaveChangesAsync();
 
                     TempData["Success"] = "Service updated successfully!";
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ServiceExists(service.Id))
+                    if (!ServiceExists(repairService.Id))
                     {
                         return NotFound();
                     }
@@ -99,19 +130,38 @@ namespace ComBag.Controllers
                 }
                 return RedirectToAction(nameof(Services));
             }
-
-            return View(service);
+            
+            return View(repairService);
         }
 
-        // POST: AdminRepair/DeleteService/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteService(int id)
+        // GET: AdminRepair/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            var service = await _context.RepairServices.FindAsync(id);
-            if (service != null)
+            if (id == null)
             {
-                _context.RepairServices.Remove(service);
+                return NotFound();
+            }
+
+            var repairService = await _context.RepairServices
+                .FirstOrDefaultAsync(m => m.Id == id);
+                
+            if (repairService == null)
+            {
+                return NotFound();
+            }
+
+            return View(repairService);
+        }
+
+        // POST: AdminRepair/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var repairService = await _context.RepairServices.FindAsync(id);
+            if (repairService != null)
+            {
+                _context.RepairServices.Remove(repairService);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = "Service deleted successfully!";
             }
@@ -190,68 +240,9 @@ namespace ComBag.Controllers
             return RedirectToAction(nameof(InquiryDetails), new { id });
         }
 
-        // POST: AdminRepair/ExportInquiriesToGoogleSheets
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ExportInquiriesToGoogleSheets(DateTime? fromDate, DateTime? toDate)
-        {
-            var query = _context.ServiceInquiries
-                .Include(si => si.RepairService)
-                .AsQueryable();
-
-            if (fromDate.HasValue)
-            {
-                query = query.Where(si => si.CreatedAt >= fromDate.Value);
-            }
-
-            if (toDate.HasValue)
-            {
-                query = query.Where(si => si.CreatedAt <= toDate.Value.AddDays(1));
-            }
-
-            var inquiries = await query
-                .OrderByDescending(si => si.CreatedAt)
-                .ToListAsync();
-
-            // For now, export as CSV (we'll implement Google Sheets API later)
-            var csv = GenerateInquiriesCSV(inquiries);
-            
-            return File(System.Text.Encoding.UTF8.GetBytes(csv), "text/csv", $"repair-inquiries-{DateTime.Now:yyyyMMdd-HHmmss}.csv");
-        }
-
         private bool ServiceExists(int id)
         {
             return _context.RepairServices.Any(e => e.Id == id);
-        }
-
-        private string GenerateInquiriesCSV(List<ServiceInquiry> inquiries)
-        {
-            var csv = "ID,Date,Full Name,Email,Phone,Service,Status,Description,Quoted Price,Admin Notes\n";
-            
-            foreach (var inquiry in inquiries)
-            {
-                csv += $"\"{inquiry.Id}\",";
-                csv += $"\"{inquiry.CreatedAt:yyyy-MM-dd HH:mm}\",";
-                csv += $"\"{EscapeCsvField(inquiry.FullName)}\",";
-                csv += $"\"{EscapeCsvField(inquiry.Email)}\",";
-                csv += $"\"{EscapeCsvField(inquiry.PhoneNumber)}\",";
-                csv += $"\"{EscapeCsvField(inquiry.RepairService?.Name)}\",";
-                csv += $"\"{EscapeCsvField(inquiry.Status)}\",";
-                csv += $"\"{EscapeCsvField(inquiry.Description)}\",";
-                csv += $"\"{inquiry.QuotedPrice?.ToString("N2")}\",";
-                csv += $"\"{EscapeCsvField(inquiry.AdminNotes)}\"\n";
-            }
-
-            return csv;
-        }
-
-        private string EscapeCsvField(string field)
-        {
-            if (string.IsNullOrEmpty(field))
-                return "";
-            
-            // Escape quotes by doubling them
-            return field.Replace("\"", "\"\"");
         }
     }
 }

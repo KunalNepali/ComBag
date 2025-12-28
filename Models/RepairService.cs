@@ -10,19 +10,22 @@ namespace ComBag.Models
         [Required(ErrorMessage = "Service name is required")]
         [StringLength(100, ErrorMessage = "Service name cannot exceed 100 characters")]
         [Display(Name = "Service Name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Description is required")]
         [StringLength(1000, ErrorMessage = "Description cannot exceed 1000 characters")]
         [Display(Name = "Description")]
         public string Description { get; set; }
 
-         [Column(TypeName = "decimal(18,2)")]
+        [Required(ErrorMessage = "Starting price is required")]
+        [Range(0.01, 10000, ErrorMessage = "Price must be between 0.01 and 10000")]
+        [Column(TypeName = "decimal(18,2)")]
         [Display(Name = "Starting Price")]
         public decimal StartingPrice { get; set; }
 
+        [Range(0.5, 100, ErrorMessage = "Time must be between 0.5 and 100 hours")]
         [Column(TypeName = "decimal(18,2)")]
-        [Display(Name = "Estimated Time (hours)")]
+        [Display(Name = "Estimated Time (hours)")]     
         public decimal? EstimatedTimeHours { get; set; }
 
 
@@ -35,11 +38,12 @@ namespace ComBag.Models
         [StringLength(50, ErrorMessage = "Duration cannot exceed 50 characters")]
         [Display(Name = "Estimated Duration")]
         public string Duration { get; set; }
-
         [Display(Name = "Is Active")]
         public bool IsActive { get; set; } = true;
 
         // Add these properties that are referenced in the view
+        [Display(Name = "Image URL")]
+        [Url(ErrorMessage = "Please enter a valid URL")]
         public string? ImageUrl { get; set; }
 
         [Display(Name = "Sort Order")]
