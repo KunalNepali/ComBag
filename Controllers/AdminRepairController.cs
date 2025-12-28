@@ -5,6 +5,7 @@ using ComBag.Data;
 using ComBag.Models;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace ComBag.Controllers
 {
@@ -12,10 +13,12 @@ namespace ComBag.Controllers
     public class AdminRepairController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _environment;
 
-        public AdminRepairController(ApplicationDbContext context)
+        public AdminRepairController(ApplicationDbContext context, IWebHostEnvironment environment)
         {
             _context = context;
+            _environment = environment;
         }
 
         // GET: AdminRepair/Services
@@ -35,50 +38,62 @@ namespace ComBag.Controllers
             return View();
         }
 
-// POST: AdminRepair/Create
-[HttpPost]
-[ValidateAntiForgeryToken]
-public async Task<IActionResult> Create(RepairService repairService)
-{
-    Console.WriteLine("=== CREATE POST CALLED ===");
-    Console.WriteLine($"Model is null: {repairService == null}");
-    
-    if (!ModelState.IsValid)
-    {
-        Console.WriteLine($"❌ ModelState is INVALID. Error count: {ModelState.ErrorCount}");
-        foreach (var state in ModelState)
+        // POST: AdminRepair/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(RepairService repairService, IFormFile imageFile)
         {
-            foreach (var error in state.Value.Errors)
+            Console.WriteLine("=== CREATE POST CALLED ===");
+            Console.WriteLine($"Model is null: {repairService == null}");
+            
+            // Remove StartingPrice validation since it's removed from model
+            ModelState.Remove("StartingPrice");
+            ModelState.Remove("EstimatedTimeHours");
+            
+            if (!ModelState.IsValid)
             {
-                Console.WriteLine($"   Field '{state.Key}': {error.ErrorMessage}");
+                Console.WriteLine($"❌ ModelState is INVALID. Error count: {ModelState.ErrorCount}");
+                foreach (var state in ModelState)
+                {
+                    foreach (var error in state.Value.Errors)
+                    {
+                        Console.WriteLine($"   Field '{state.Key}': {error.ErrorMessage}");
+                    }
+                }
+                return View(repairService);
+            }
+            
+            Console.WriteLine("✅ ModelState is VALID");
+            Console.WriteLine($"Name: {repairService.Name}");
+            Console.WriteLine($"PriceRange: {repairService.PriceRange}");
+            Console.WriteLine($"Duration: {repairService.Duration}");
+            
+            try
+            {
+                // Handle image upload
+                if (imageFile != null && imageFile.Length > 0)
+                {
+                    var imageUrl = await UploadImage(imageFile);
+                    repairService.ImageUrl = imageUrl;
+                }
+
+                repairService.CreatedAt = DateTime.UtcNow;
+                repairService.UpdatedAt = DateTime.UtcNow;
+                
+                _context.Add(repairService);
+                await _context.SaveChangesAsync();
+                
+                Console.WriteLine($"✅ Service created with ID: {repairService.Id}");
+                TempData["Success"] = "Repair service created successfully!";
+                return RedirectToAction(nameof(Services));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ ERROR: {ex.Message}");
+                ModelState.AddModelError("", "Error creating service: " + ex.Message);
+                return View(repairService);
             }
         }
-        return View(repairService);
-    }
-    
-    Console.WriteLine("✅ ModelState is VALID");
-    Console.WriteLine($"Name: {repairService.Name}");
-    Console.WriteLine($"StartingPrice: {repairService.StartingPrice}");
-    
-    try
-    {
-        repairService.CreatedAt = DateTime.UtcNow;
-        repairService.UpdatedAt = DateTime.UtcNow;
-        
-        _context.Add(repairService);
-        await _context.SaveChangesAsync();
-        
-        Console.WriteLine($"✅ Service created with ID: {repairService.Id}");
-        TempData["Success"] = "Repair service created successfully!";
-        return RedirectToAction(nameof(Services));
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"❌ ERROR: {ex.Message}");
-        ModelState.AddModelError("", "Error creating service: " + ex.Message);
-        return View(repairService);
-    }
-}
 
         // GET: AdminRepair/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -100,17 +115,28 @@ public async Task<IActionResult> Create(RepairService repairService)
         // POST: AdminRepair/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, RepairService repairService)
+        public async Task<IActionResult> Edit(int id, RepairService repairService, IFormFile imageFile)
         {
             if (id != repairService.Id)
             {
                 return NotFound();
             }
 
+            // Remove StartingPrice validation since it's removed from model
+            ModelState.Remove("StartingPrice");
+            ModelState.Remove("EstimatedTimeHours");
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // Handle image upload if new image provided
+                    if (imageFile != null && imageFile.Length > 0)
+                    {
+                        var imageUrl = await UploadImage(imageFile);
+                        repairService.ImageUrl = imageUrl;
+                    }
+
                     repairService.UpdatedAt = DateTime.UtcNow;
                     _context.Update(repairService);
                     await _context.SaveChangesAsync();
@@ -161,6 +187,16 @@ public async Task<IActionResult> Create(RepairService repairService)
             var repairService = await _context.RepairServices.FindAsync(id);
             if (repairService != null)
             {
+                // Optional: Delete the associated image file
+                if (!string.IsNullOrEmpty(repairService.ImageUrl))
+                {
+                    var imagePath = Path.Combine(_environment.WebRootPath, repairService.ImageUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(imagePath))
+                    {
+                        System.IO.File.Delete(imagePath);
+                    }
+                }
+
                 _context.RepairServices.Remove(repairService);
                 await _context.SaveChangesAsync();
                 TempData["Success"] = "Service deleted successfully!";
@@ -243,6 +279,42 @@ public async Task<IActionResult> Create(RepairService repairService)
         private bool ServiceExists(int id)
         {
             return _context.RepairServices.Any(e => e.Id == id);
+        }
+
+        // Helper method for image upload
+        private async Task<string> UploadImage(IFormFile imageFile)
+        {
+            if (imageFile == null || imageFile.Length == 0)
+                return null;
+
+            // Validate file type
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp" };
+            var extension = Path.GetExtension(imageFile.FileName).ToLowerInvariant();
+            
+            if (string.IsNullOrEmpty(extension) || !allowedExtensions.Contains(extension))
+                throw new InvalidOperationException("Invalid file type. Only JPG, PNG, GIF, and WebP are allowed.");
+
+            // Validate file size (max 5MB)
+            if (imageFile.Length > 5 * 1024 * 1024)
+                throw new InvalidOperationException("File size exceeds 5MB limit.");
+
+            // Create unique filename
+            var fileName = Guid.NewGuid().ToString() + extension;
+            var uploadsFolder = Path.Combine(_environment.WebRootPath, "uploads", "services");
+            
+            // Create directory if it doesn't exist
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            // Save file
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(stream);
+            }
+
+            return $"/uploads/services/{fileName}";
         }
     }
 }
