@@ -64,6 +64,24 @@
                     }
                 </td>
                 <td>
+    <div class="btn-group" role="group">
+        <!-- View/Details Button -->
+        <a asp-action="Details" asp-route-id="@service.Id" class="btn btn-sm btn-outline-info">
+            <i class="bi bi-eye"></i> View
+        </a>
+        <!-- Edit Button -->
+        <a asp-action="Edit" asp-route-id="@service.Id" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-pencil"></i> Edit
+        </a>
+        <!-- Delete Button (triggers a confirmation modal) -->
+        <button type="button" class="btn btn-sm btn-outline-danger" 
+                data-bs-toggle="modal" data-bs-target="#deleteModal" 
+                data-id="@service.Id" data-name="@service.Name">
+            <i class="bi bi-trash"></i> Delete
+        </button>
+    </div>
+</td>
+                <td>
                     @if (!string.IsNullOrEmpty(service.PriceRange))
                     {
                         <span class="badge bg-primary">@service.PriceRange</span>
@@ -198,11 +216,11 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Initialize DataTable if you have many records
+            // Initialize DataTable - REMOVE the 'order' option for now
             $('#servicesTable').DataTable({
                 pageLength: 10,
-                responsive: true,
-                order: [[5, 'asc']] // Sort by SortOrder by default
+                responsive: true
+                // Temporarily removed: order: [[5, 'asc']]
             });
 
             // Delete modal handling
