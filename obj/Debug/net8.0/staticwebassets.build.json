@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "E/PL3AgHDpLZji38xzYutwsj6XXueNcpbgvKphuZ9J0=",
+  "Hash": "wO7SAmPxOFNZY9xc9zcT+Z2AH288ElzB6qQwEHnotnk=",
   "Source": "ComBag",
   "BasePath": "_content/ComBag",
   "Mode": "Default",
@@ -2599,6 +2599,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/uploads/f4666fb9-923b-4684-843c-45f5ec0d8f47_boruto.jpg"
+    },
+    {
+      "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/services/6ac7da99-55a9-4d54-a76b-353aa344acc2.jpg",
+      "SourceId": "ComBag",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/kunal/Desktop/ComBag/wwwroot/",
+      "BasePath": "_content/ComBag",
+      "RelativePath": "uploads/services/6ac7da99-55a9-4d54-a76b-353aa344acc2.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/services/6ac7da99-55a9-4d54-a76b-353aa344acc2.jpg"
     }
   ]
 }

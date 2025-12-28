@@ -301,6 +301,10 @@
       "PackagePath": "staticwebassets/uploads/f4666fb9-923b-4684-843c-45f5ec0d8f47_boruto.jpg"
     },
     {
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/services/6ac7da99-55a9-4d54-a76b-353aa344acc2.jpg",
+      "PackagePath": "staticwebassets/uploads/services/6ac7da99-55a9-4d54-a76b-353aa344acc2.jpg"
+    },
+    {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ComBag.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

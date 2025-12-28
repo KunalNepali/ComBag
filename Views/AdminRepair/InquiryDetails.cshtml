@@ -1,0 +1,249 @@
+@model ComBag.Models.ServiceInquiry
+@{
+    ViewData["Title"] = "Inquiry Details";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mt-4">
+            <i class="bi bi-envelope me-2"></i>@ViewData["Title"] #@Model.Id
+        </h1>
+        <div>
+            <a asp-action="Inquiries" class="btn btn-secondary">
+                <i class="bi bi-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+
+    <div class="row">
+        <!-- Left Column: Inquiry Details -->
+        <div class="col-md-8">
+            <!-- Customer Information Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-person me-1"></i>
+                    Customer Information
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl>
+                                <dt>Full Name</dt>
+                                <dd>@Model.FullName</dd>
+                                
+                                <dt>Email</dt>
+                                <dd>
+                                    <a href="mailto:@Model.Email">@Model.Email</a>
+                                </dd>
+                                
+                                <dt>Phone</dt>
+                                <dd>
+                                    <a href="tel:@Model.PhoneNumber">@Model.PhoneNumber</a>
+                                </dd>
+                                
+                                @if (Model.User != null)
+                                {
+                                    <dt>Registered User</dt>
+                                    <dd>
+                                        <span class="badge bg-info">Yes</span>
+                                        @Model.User.Email
+                                    </dd>
+                                }
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl>
+                                <dt>Inquiry Date</dt>
+                                <dd>@Model.CreatedAt.ToString("MMMM dd, yyyy hh:mm tt")</dd>
+                                
+                                <dt>Last Updated</dt>
+                                <dd>@Model.UpdatedAt.ToString("MMMM dd, yyyy hh:mm tt")</dd>
+                                
+                                <dt>Bag Type/Brand</dt>
+                                <dd>@(string.IsNullOrEmpty(Model.BagType) ? "Not specified" : Model.BagType)</dd>
+                                
+                                <dt>Service Requested</dt>
+                                <dd>
+                                    @if (Model.RepairService != null)
+                                    {
+                                        <span class="badge bg-primary">@Model.RepairService.Name</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">Custom Service</span>
+                                    }
+                                </dd>
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description & Damage Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-chat-text me-1"></i>
+                    Description of Damage/Customization
+                </div>
+                <div class="card-body">
+                    <p>@Model.Description</p>
+                    
+                    <!-- Damage Image -->
+                    @if (!string.IsNullOrEmpty(Model.DamageImageUrl))
+                    {
+                        <div class="mt-3">
+                            <h6>Damage Image:</h6>
+                            <img src="@Model.DamageImageUrl" alt="Damage Image" class="img-thumbnail" style="max-height: 300px;" />
+                            <div class="mt-2">
+                                <a href="@Model.DamageImageUrl" target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-box-arrow-up-right"></i> View Full Image
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Status Update & Admin Actions -->
+        <div class="col-md-4">
+            <!-- Current Status Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-activity me-1"></i>
+                    Current Status
+                </div>
+                <div class="card-body">
+                    <div class="text-center mb-3">
+                        @GetStatusBadge(Model.Status)
+                    </div>
+                    
+                    <dl>
+                        <dt>Quoted Price</dt>
+                        <dd>
+                            @if (Model.QuotedPrice.HasValue)
+                            {
+                                <span class="h5 text-primary">$@Model.QuotedPrice.Value.ToString("N2")</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not quoted yet</span>
+                            }
+                        </dd>
+                        
+                        <dt>Estimated Completion</dt>
+                        <dd>
+                            @if (Model.EstimatedCompletionDate.HasValue)
+                            {
+                                @Model.EstimatedCompletionDate.Value.ToString("MMMM dd, yyyy")
+                            }
+                            else
+                            {
+                                <span class="text-muted">Not set</span>
+                            }
+                        </dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Update Status Form -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="bi bi-pencil me-1"></i>
+                    Update Status
+                </div>
+                <div class="card-body">
+                    <form asp-action="UpdateInquiryStatus" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@Model.Id" />
+                        
+                        <div class="mb-3">
+                            <label for="status" class="form-label">New Status</label>
+                            <select name="status" class="form-select" required>
+                                <option value="New" selected="@(Model.Status == "New")">New</option>
+                                <option value="In Progress" selected="@(Model.Status == "In Progress")">In Progress</option>
+                                <option value="Quoted" selected="@(Model.Status == "Quoted")">Quoted</option>
+                                <option value="Completed" selected="@(Model.Status == "Completed")">Completed</option>
+                                <option value="Cancelled" selected="@(Model.Status == "Cancelled")">Cancelled</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="quotedPrice" class="form-label">Quoted Price ($)</label>
+                            <input type="number" name="quotedPrice" class="form-control" 
+                                   step="0.01" min="0" value="@Model.QuotedPrice" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="estimatedCompletionDate" class="form-label">Estimated Completion Date</label>
+                            <input type="date" name="estimatedCompletionDate" class="form-control" 
+                                   value="@(Model.EstimatedCompletionDate?.ToString("yyyy-MM-dd"))" />
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="adminNotes" class="form-label">Admin Notes</label>
+                            <textarea name="adminNotes" class="form-control" rows="3">@Model.AdminNotes</textarea>
+                            <small class="text-muted">Internal notes (customer won't see these)</small>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-save"></i> Update Status
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Admin Notes Card -->
+            @if (!string.IsNullOrEmpty(Model.AdminNotes))
+            {
+                <div class="card">
+                    <div class="card-header">
+                        <i class="bi bi-sticky me-1"></i>
+                        Current Admin Notes
+                    </div>
+                    <div class="card-body">
+                        <p class="text-muted">@Model.AdminNotes</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusBadge(string status)
+    {
+        return status switch
+        {
+            "New" => "<span class='badge bg-warning fs-5'>New</span>",
+            "In Progress" => "<span class='badge bg-info fs-5'>In Progress</span>",
+            "Quoted" => "<span class='badge bg-primary fs-5'>Quoted</span>",
+            "Completed" => "<span class='badge bg-success fs-5'>Completed</span>",
+            "Cancelled" => "<span class='badge bg-danger fs-5'>Cancelled</span>",
+            _ => "<span class='badge bg-secondary fs-5'>" + status + "</span>"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Set min date to today for estimated completion
+            const today = new Date().toISOString().split('T')[0];
+            $('input[name="estimatedCompletionDate"]').attr('min', today);
+            
+            // Auto-focus on status dropdown
+            $('select[name="status"]').focus();
+        });
+    </script>
+}

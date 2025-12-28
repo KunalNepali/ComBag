@@ -1,0 +1,273 @@
+@model IEnumerable<ComBag.Models.ServiceInquiry>
+@{
+    ViewData["Title"] = "Service Inquiries";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="mt-4">
+            <i class="bi bi-envelope me-2"></i>@ViewData["Title"]
+        </h1>
+        <div class="d-flex gap-2">
+            <!-- Export Button -->
+            <form asp-action="ExportInquiriesToGoogleSheets" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-outline-success">
+                    <i class="bi bi-download"></i> Export CSV
+                </button>
+            </form>
+            
+            <!-- Refresh Button -->
+            <a href="@Url.Action("Inquiries")" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-clockwise"></i> Refresh
+            </a>
+        </div>
+    </div>
+
+    <!-- Filters Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-filter me-1"></i>
+            Filter Inquiries
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" class="form-select" onchange="this.form.submit()">
+                        <option value="">All Statuses</option>
+                        @foreach (var statusOption in ViewBag.StatusOptions)
+                        {
+                            <option value="@statusOption" selected="@(ViewBag.Status == statusOption ? "selected" : null)">
+                                @statusOption
+                            </option>
+                        }
+                    </select>
+                </div>
+                
+                <div class="col-md-6">
+                    <label for="search" class="form-label">Search</label>
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" value="@ViewBag.Search" 
+                               placeholder="Search by name, email, or description...">
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="col-md-2 d-flex align-items-end">
+                    <a href="@Url.Action("Inquiries")" class="btn btn-outline-secondary w-100">
+                        Clear Filters
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Inquiries List Card -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <i class="bi bi-list me-1"></i>
+            Inquiries List
+        </div>
+        <div class="card-body">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (!Model.Any())
+            {
+                <div class="alert alert-info text-center py-4">
+                    <i class="bi bi-inbox display-6 mb-3"></i>
+                    <h4>No Inquiries Found</h4>
+                    <p class="mb-0">@(string.IsNullOrEmpty(ViewBag.Status) && string.IsNullOrEmpty(ViewBag.Search) 
+                        ? "No service inquiries have been submitted yet." 
+                        : "No inquiries match your filters.")</p>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover" id="inquiriesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer</th>
+                                <th>Service</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var inquiry in Model)
+                            {
+                                <tr>
+                                    <td>@inquiry.Id</td>
+                                    <td>
+                                        <strong>@inquiry.FullName</strong><br>
+                                        <small class="text-muted">@inquiry.Email</small><br>
+                                        <small>@inquiry.PhoneNumber</small>
+                                    </td>
+                                    <td>
+                                        @if (inquiry.RepairService != null)
+                                        {
+                                            <span class="badge bg-primary">@inquiry.RepairService.Name</span>
+                                        }
+                                        else if (!string.IsNullOrEmpty(inquiry.BagType))
+                                        {
+                                            <small>@inquiry.BagType</small>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">Custom</span>
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (inquiry.Description.Length > 100)
+                                        {
+                                            @inquiry.Description.Substring(0, 100)<text>...</text>
+                                        }
+                                        else
+                                        {
+                                            @inquiry.Description
+                                        }
+                                    </td>
+                                    <td>
+                                        @GetStatusBadge(inquiry.Status)
+                                    </td>
+                                    <td>
+                                        @inquiry.CreatedAt.ToString("MMM dd, yyyy")<br>
+                                        <small class="text-muted">@inquiry.CreatedAt.ToString("hh:mm tt")</small>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a asp-action="InquiryDetails" asp-route-id="@inquiry.Id" 
+                                               class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i> View
+                                            </a>
+                                            @if (inquiry.Status == "New")
+                                            {
+                                                <a asp-action="InquiryDetails" asp-route-id="@inquiry.Id" 
+                                                   class="btn btn-sm btn-outline-success">
+                                                    <i class="bi bi-chat"></i> Quote
+                                                </a>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-primary text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="small">Total Inquiries</div>
+                            <div class="h4">@Model.Count()</div>
+                        </div>
+                        <i class="bi bi-envelope" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-warning text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="small">New Inquiries</div>
+                            <div class="h4">@Model.Count(i => i.Status == "New")</div>
+                        </div>
+                        <i class="bi bi-clock" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-info text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="small">In Progress</div>
+                            <div class="h4">@Model.Count(i => i.Status == "In Progress")</div>
+                        </div>
+                        <i class="bi bi-gear" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card bg-success text-white mb-4">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div class="small">Completed</div>
+                            <div class="h4">@Model.Count(i => i.Status == "Completed")</div>
+                        </div>
+                        <i class="bi bi-check-circle" style="font-size: 2.5rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+    public string GetStatusBadge(string status)
+    {
+        return status switch
+        {
+            "New" => "<span class='badge bg-warning'>New</span>",
+            "In Progress" => "<span class='badge bg-info'>In Progress</span>",
+            "Quoted" => "<span class='badge bg-primary'>Quoted</span>",
+            "Completed" => "<span class='badge bg-success'>Completed</span>",
+            "Cancelled" => "<span class='badge bg-danger'>Cancelled</span>",
+            _ => "<span class='badge bg-secondary'>" + status + "</span>"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Initialize DataTable
+            $('#inquiriesTable').DataTable({
+                pageLength: 10,
+                responsive: true,
+                order: [[0, 'desc']], // Sort by ID descending (newest first)
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 }, // ID
+                    { responsivePriority: 2, targets: 1 }, // Customer
+                    { responsivePriority: 4, targets: 3 }, // Status
+                    { responsivePriority: 3, targets: 6 }  // Actions
+                ]
+            });
+
+            // Auto-refresh every 30 seconds if on New tab
+            const urlParams = new URLSearchParams(window.location.search);
+            const status = urlParams.get('status');
+            
+            if (!status || status === 'New') {
+                setInterval(function() {
+                    window.location.reload();
+                }, 30000); // 30 seconds
+            }
+        });
+    </script>
+}

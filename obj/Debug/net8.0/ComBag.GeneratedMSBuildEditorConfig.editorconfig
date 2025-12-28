@@ -82,6 +82,14 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5SZXBhaXIvRWRpdC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
+[/home/kunal/Desktop/ComBag/Views/AdminRepair/Inquiries.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5SZXBhaXIvSW5xdWlyaWVzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/kunal/Desktop/ComBag/Views/AdminRepair/InquiryDetails.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5SZXBhaXIvSW5xdWlyeURldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
 [/home/kunal/Desktop/ComBag/Views/AdminRepair/Services.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5SZXBhaXIvU2VydmljZXMuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
