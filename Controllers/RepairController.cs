@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using ComBag.Data;
 using ComBag.Models;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations; // Add this line
 
 namespace ComBag.Controllers
 {

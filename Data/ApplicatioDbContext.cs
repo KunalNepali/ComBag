@@ -22,7 +22,8 @@ namespace ComBag.Data
         public DbSet<BlogCategory> BlogCategories { get; set; }
         public DbSet<BlogComment> BlogComments { get; set; }
         public DbSet<RepairService> RepairServices { get; set; }
-        public DbSet<ServiceInquiry> ServiceInquiries { get; set; }
+        public DbSet<ServiceInquiry> ServiceInquiries { get; set; } 
+        public DbSet<OrderTracking> OrderTracking { get; set; }
         // ✅ Optional: Override OnModelCreating if you need to configure relationships
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -81,6 +82,13 @@ namespace ComBag.Data
             .WithMany()
             .HasForeignKey(si => si.RepairServiceId)
             .OnDelete(DeleteBehavior.SetNull);
+            // Configure OrderTracking relationship
+             builder.Entity<OrderTracking>()
+            .HasOne(ot => ot.Order)
+            .WithMany()
+            .HasForeignKey(ot => ot.OrderId)
+            .OnDelete(DeleteBehavior.Cascade);
+
             }
     }
 }

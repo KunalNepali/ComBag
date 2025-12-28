@@ -1,3 +1,5 @@
+using ComBag.Models;
+
 namespace ComBag.Services
 {
     public interface IPaymentService

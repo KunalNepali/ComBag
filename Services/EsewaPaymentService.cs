@@ -1,5 +1,8 @@
 using System.Text;
 using System.Text.Json;
+using ComBag.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace ComBag.Services
 {
@@ -44,7 +47,23 @@ namespace ComBag.Services
 
                 // Generate signature (simplified - implement proper HMAC SHA256)
                 var signatureData = $"total_amount={requestData.total_amount},transaction_uuid={requestData.transaction_uuid},product_code={requestData.product_code}";
-                requestData = requestData with { signature = GenerateSignature(signatureData) };
+                var signature = GenerateSignature(signatureData);
+                
+                // Create new object with signature (since anonymous types are immutable)
+                var requestDataWithSignature = new
+                {
+                    amount = requestData.amount,
+                    tax_amount = requestData.tax_amount,
+                    total_amount = requestData.total_amount,
+                    transaction_uuid = requestData.transaction_uuid,
+                    product_code = requestData.product_code,
+                    success_url = requestData.success_url,
+                    failure_url = requestData.failure_url,
+                    product_service_charge = requestData.product_service_charge,
+                    product_delivery_charge = requestData.product_delivery_charge,
+                    signed_field_names = requestData.signed_field_names,
+                    signature = signature
+                };
 
                 return new PaymentInitiationResponse
                 {
@@ -122,17 +141,25 @@ namespace ComBag.Services
         {
             // Implement HMAC SHA256 signature generation
             // This is a placeholder - implement proper signature generation
-            return "test_signature";
+            // For actual implementation, you'll need the secret key from eSewa
+            var secretKey = _configuration["PaymentGateways:Esewa:SecretKey"] ?? "test_secret";
+            
+            // Example of HMAC SHA256 implementation (simplified)
+            using (var hmac = new System.Security.Cryptography.HMACSHA256(Encoding.UTF8.GetBytes(secretKey)))
+            {
+                var hash = hmac.ComputeHash(Encoding.UTF8.GetBytes(data));
+                return Convert.ToBase64String(hash);
+            }
         }
     }
 
     public class EsewaVerificationResponse
     {
-        public string Status { get; set; }
-        public string Message { get; set; }
-        public string TransactionCode { get; set; }
+        public string Status { get; set; } = string.Empty;
+        public string Message { get; set; } = string.Empty;
+        public string TransactionCode { get; set; } = string.Empty;
         public decimal TotalAmount { get; set; }
-        public string TransactionUuid { get; set; }
-        public string ProductCode { get; set; }
+        public string TransactionUuid { get; set; } = string.Empty;
+        public string ProductCode { get; set; } = string.Empty;
     }
 }

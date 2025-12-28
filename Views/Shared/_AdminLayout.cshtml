@@ -67,6 +67,12 @@
             <i class="bi bi-box-seam"></i> Products
         </a>
     </li>
+    <!-- ✅ ADD REPAIR SERVICES ADMIN LINK -->
+    <li class="nav-item">
+        <a class="nav-link @IsActive("AdminRepair")" asp-controller="AdminRepair" asp-action="Services">
+            <i class="bi bi-tools"></i> Repair Services
+        </a>
+    </li>
     <!-- ✅ ADD BLOG TO ADMIN SIDEBAR -->
     <li class="nav-item">
         <a class="nav-link @IsActive("AdminBlog")" asp-controller="AdminBlog" asp-action="Index">
@@ -76,6 +82,12 @@
     <li class="nav-item">
         <a class="nav-link @IsActive("AdminOrders")" asp-controller="AdminOrders" asp-action="Index">
             <i class="bi bi-list-check"></i> Orders
+        </a>
+    </li>
+     <!-- ✅ ADD REPAIR INQUIRIES LINK -->
+    <li class="nav-item">
+        <a class="nav-link @IsActive("AdminRepair", "Inquiries")" asp-controller="AdminRepair" asp-action="Inquiries">
+            <i class="bi bi-inbox"></i> Repair Inquiries
         </a>
     </li>
     <li class="nav-item">

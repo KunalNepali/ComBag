@@ -41,6 +41,8 @@ namespace ComBag.Models
     
     [Display(Name = "Payment Date")]
     public DateTime? PaymentDate { get; set; }
+        public string? Email { get; set; }
+    public string? Phone { get; set; }
     
 
         [Required(ErrorMessage = "Shipping address is required")]
