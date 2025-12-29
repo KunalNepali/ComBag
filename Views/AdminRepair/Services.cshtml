@@ -37,7 +37,7 @@
             }
 
             <div class="table-responsive">
-                <table class="table table-striped table-hover" id="servicesTable">
+ <table class="table table-striped table-hover" id="servicesTable">
     <thead>
         <tr>
             <th>ID</th>
@@ -54,7 +54,10 @@
         @foreach (var service in Model)
         {
             <tr>
+                <!-- Column 1: ID -->
                 <td>@service.Id</td>
+                
+                <!-- Column 2: Name -->
                 <td>
                     <strong>@service.Name</strong>
                     @if (!string.IsNullOrEmpty(service.Description) && service.Description.Length > 50)
@@ -63,24 +66,8 @@
                         <small class="text-muted">@service.Description.Substring(0, 50)...</small>
                     }
                 </td>
-                <td>
-    <div class="btn-group" role="group">
-        <!-- View/Details Button -->
-        <a asp-action="Details" asp-route-id="@service.Id" class="btn btn-sm btn-outline-info">
-            <i class="bi bi-eye"></i> View
-        </a>
-        <!-- Edit Button -->
-        <a asp-action="Edit" asp-route-id="@service.Id" class="btn btn-sm btn-outline-primary">
-            <i class="bi bi-pencil"></i> Edit
-        </a>
-        <!-- Delete Button (triggers a confirmation modal) -->
-        <button type="button" class="btn btn-sm btn-outline-danger" 
-                data-bs-toggle="modal" data-bs-target="#deleteModal" 
-                data-id="@service.Id" data-name="@service.Name">
-            <i class="bi bi-trash"></i> Delete
-        </button>
-    </div>
-</td>
+                
+                <!-- Column 3: Price Range -->
                 <td>
                     @if (!string.IsNullOrEmpty(service.PriceRange))
                     {
@@ -91,13 +78,23 @@
                         <span class="text-muted">Contact for quote</span>
                     }
                 </td>
+                
+                <!-- Column 4: Duration -->
                 <td>
                     @if (!string.IsNullOrEmpty(service.Duration))
                     {
                         <span class="badge bg-info">@service.Duration</span>
                     }
+                    else
+                    {
+                        <span class="text-muted">-</span>
+                    }
                 </td>
+                
+                <!-- Column 5: Category -->
                 <td>@service.Category</td>
+                
+                <!-- Column 6: Active Status -->
                 <td>
                     @if (service.IsActive)
                     {
@@ -108,9 +105,28 @@
                         <span class="badge bg-danger">Inactive</span>
                     }
                 </td>
+                
+                <!-- Column 7: Sort Order -->
                 <td>@service.SortOrder</td>
+                
+                <!-- Column 8: Actions -->
                 <td>
-                    <!-- Action buttons -->
+                    <div class="btn-group" role="group">
+                        <!-- View/Details Button -->
+                        <a asp-action="Details" asp-route-id="@service.Id" class="btn btn-sm btn-outline-info">
+                            <i class="bi bi-eye"></i> View
+                        </a>
+                        <!-- Edit Button -->
+                        <a asp-action="Edit" asp-route-id="@service.Id" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil"></i> Edit
+                        </a>
+                        <!-- Delete Button -->
+                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                data-bs-toggle="modal" data-bs-target="#deleteModal" 
+                                data-id="@service.Id" data-name="@service.Name">
+                            <i class="bi bi-trash"></i> Delete
+                        </button>
+                    </div>
                 </td>
             </tr>
         }
@@ -216,14 +232,14 @@
 @section Scripts {
     <script>
         $(document).ready(function() {
-            // Initialize DataTable - REMOVE the 'order' option for now
+            // SIMPLIFIED: Let DataTables auto-detect columns
             $('#servicesTable').DataTable({
                 pageLength: 10,
                 responsive: true
-                // Temporarily removed: order: [[5, 'asc']]
+                // No column ordering specified - let it auto-detect
             });
-
-            // Delete modal handling
+            
+            // Delete modal handling (keep this)
             $('#deleteModal').on('show.bs.modal', function(event) {
                 var button = $(event.relatedTarget);
                 var serviceId = button.data('id');
