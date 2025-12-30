@@ -102,30 +102,76 @@ namespace ComBag.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
-
-        // GET: /Account/Manage
-        [HttpGet]
-        [Authorize]
-        public async Task<IActionResult> Manage()
+[HttpPost]
+[ValidateAntiForgeryToken]
+[Authorize]
+public async Task<IActionResult> UpdateProfile(ManageViewModel model)
+{
+    if (!ModelState.IsValid)
+    {
+        return View("Manage", model);
+    }
+    
+    var user = await _userManager.GetUserAsync(User);
+    if (user == null)
+    {
+        return NotFound();
+    }
+    
+    try
+    {
+        // Update user properties
+        user.FullName = model.FullName;
+        // REMOVE: user.PhoneNumber = model.PhoneNumber;
+        user.Address = model.Address;
+        user.City = model.City;
+        user.State = model.State;
+        user.PostalCode = model.PostalCode;
+        
+        var result = await _userManager.UpdateAsync(user);
+        
+        if (result.Succeeded)
         {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            
-            var model = new ManageViewModel
-            {
-                Email = user.Email,
-                FullName = user.FullName,
-                Address = user.Address,
-                City = user.City,
-                State = user.State,
-                PostalCode = user.PostalCode
-            };
-            
-            return View(model);
+            TempData["Success"] = "Your profile has been updated successfully!";
+            return RedirectToAction(nameof(Manage));
         }
+        
+        foreach (var error in result.Errors)
+        {
+            ModelState.AddModelError(string.Empty, error.Description);
+        }
+    }
+    catch (Exception ex)
+    {
+        ModelState.AddModelError(string.Empty, $"Error updating profile: {ex.Message}");
+    }
+    
+    return View("Manage", model);
+}
+        // GET: /Account/Manage
+[HttpGet]
+[Authorize]
+public async Task<IActionResult> Manage()
+{
+    var user = await _userManager.GetUserAsync(User);
+    if (user == null)
+    {
+        return NotFound();
+    }
+    
+    var model = new ManageViewModel
+    {
+        Email = user.Email,
+        FullName = user.FullName,
+        Address = user.Address,
+        City = user.City,
+        State = user.State,
+        PostalCode = user.PostalCode
+        // REMOVED PhoneNumber 
+    };
+    
+    return View(model);
+}
 
         private IActionResult RedirectToLocal(string returnUrl)
         {

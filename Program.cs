@@ -57,6 +57,8 @@ builder.Services.AddSession(options =>
 // Add Razor Pages support (required for Identity UI)
 builder.Services.AddRazorPages();
 
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 // ========== 4. CONFIGURE MIDDLEWARE PIPELINE ==========
