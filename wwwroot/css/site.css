@@ -20,3 +20,12 @@ html {
 body {
   margin-bottom: 60px;
 }
+.list-group-item.active {
+    background-color: #f1f8fd !important;
+    border-color: #f1f8fd !important;
+    color: #212529 !important;
+}
+
+.list-group-item.active a {
+    color: #212529 !important;
+}
