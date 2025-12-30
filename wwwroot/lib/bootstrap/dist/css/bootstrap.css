@@ -5047,9 +5047,9 @@ textarea.form-control-lg {
 }
 .list-group-item.active {
   z-index: 2;
-  color: #fff;
-  background-color: #0d6efd;
-  border-color: #0d6efd;
+  color: #212529;
+  background-color: #fff;
+  border-color: #f1f8fd;
 }
 .list-group-item + .list-group-item {
   border-top-width: 0;

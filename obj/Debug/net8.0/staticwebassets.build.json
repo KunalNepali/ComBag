@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "sMpYeI6OJHKBT4Qw49OmsRMt8Go9bBz11MsYU47Cn3s=",
+  "Hash": "svS706giIb/HTLzmedzIXJG5TcBMcVc4hSLP1kOofNo=",
   "Source": "ComBag",
   "BasePath": "_content/ComBag",
   "Mode": "Default",
@@ -2504,6 +2504,25 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/uploads/blog/05b83b6b-3713-4135-91f9-20676e1195e2_leather_bag.jpg"
+    },
+    {
+      "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/blog/14aae8aa-f2be-4229-bf7b-f317fa32c34d_store4.jpg",
+      "SourceId": "ComBag",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/kunal/Desktop/ComBag/wwwroot/",
+      "BasePath": "_content/ComBag",
+      "RelativePath": "uploads/blog/14aae8aa-f2be-4229-bf7b-f317fa32c34d_store4.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/blog/14aae8aa-f2be-4229-bf7b-f317fa32c34d_store4.jpg"
     },
     {
       "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/blog/c69038d8-d018-4d8f-9521-4da5b4c97756_eminem.jpg",
