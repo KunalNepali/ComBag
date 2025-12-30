@@ -77,7 +77,7 @@
                                     </td>
                                     <td>@product.Name</td>
                                     <td>@product.Category?.Name</td>
-                                    <td>$@product.Price.ToString("N2")</td>
+                                    <td>NRs.@product.Price.ToString("N2")</td>
                                     <td>
                                         <span class="badge @(product.StockQuantity > 0 ? "bg-success" : "bg-danger")">
                                             @product.StockQuantity

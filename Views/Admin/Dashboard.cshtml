@@ -111,7 +111,7 @@
                                     <td>#@order.Id</td>
                                     <td>@(order.User?.Email ?? "N/A")</td>
                                     <td>@order.OrderDate.ToString("MMM dd, yyyy")</td>
-                                    <td>$@order.TotalAmount.ToString("N2")</td>
+                                    <td>NRs.@order.TotalAmount.ToString("N2")</td>
                                     <td>
                                         <span class="badge @GetStatusBadgeClass(order.Status)">
                                             @order.Status
