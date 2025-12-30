@@ -178,7 +178,64 @@ namespace ComBag.Controllers
 
             return View(repairService);
         }
+// POST: AdminRepair/ExportInquiriesToGoogleSheets
+[HttpPost]
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> ExportInquiriesToGoogleSheets(DateTime? fromDate, DateTime? toDate)
+{
+    var query = _context.ServiceInquiries
+        .Include(si => si.RepairService)
+        .AsQueryable();
 
+    if (fromDate.HasValue)
+    {
+        query = query.Where(si => si.CreatedAt >= fromDate.Value);
+    }
+
+    if (toDate.HasValue)
+    {
+        query = query.Where(si => si.CreatedAt <= toDate.Value.AddDays(1));
+    }
+
+    var inquiries = await query
+        .OrderByDescending(si => si.CreatedAt)
+        .ToListAsync();
+
+    // Generate CSV
+    var csv = GenerateInquiriesCSV(inquiries);
+    
+    return File(System.Text.Encoding.UTF8.GetBytes(csv), "text/csv", $"repair-inquiries-{DateTime.Now:yyyyMMdd-HHmmss}.csv");
+}
+
+private string GenerateInquiriesCSV(List<ServiceInquiry> inquiries)
+{
+    var csv = "ID,Date,Full Name,Email,Phone,Service,Status,Description,Quoted Price,Admin Notes\n";
+    
+    foreach (var inquiry in inquiries)
+    {
+        csv += $"\"{inquiry.Id}\",";
+        csv += $"\"{inquiry.CreatedAt:yyyy-MM-dd HH:mm}\",";
+        csv += $"\"{EscapeCsvField(inquiry.FullName)}\",";
+        csv += $"\"{EscapeCsvField(inquiry.Email)}\",";
+        csv += $"\"{EscapeCsvField(inquiry.PhoneNumber)}\",";
+        csv += $"\"{EscapeCsvField(inquiry.RepairService?.Name)}\",";
+        csv += $"\"{EscapeCsvField(inquiry.Status)}\",";
+        csv += $"\"{EscapeCsvField(inquiry.Description)}\",";
+        csv += $"\"{inquiry.QuotedPrice?.ToString("N2")}\",";
+        csv += $"\"{EscapeCsvField(inquiry.AdminNotes)}\"\n";
+    }
+
+    return csv;
+}
+
+private string EscapeCsvField(string field)
+{
+    if (string.IsNullOrEmpty(field))
+        return "";
+    
+    // Escape quotes by doubling them
+    return field.Replace("\"", "\"\"");
+}
         // POST: AdminRepair/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

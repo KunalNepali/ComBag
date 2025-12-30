@@ -170,7 +170,43 @@
             }
         </div>
     </div>
-
+<!-- Export Card -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="bi bi-download me-1"></i>
+        Export Inquiries
+    </div>
+    <div class="card-body">
+        <form asp-action="ExportInquiriesToGoogleSheets" method="post" class="row g-3">
+            @Html.AntiForgeryToken()
+            
+            <div class="col-md-4">
+                <label for="fromDate" class="form-label">From Date</label>
+                <input type="date" name="fromDate" class="form-control" 
+                       value="@DateTime.Now.AddDays(-30).ToString("yyyy-MM-dd")" />
+            </div>
+            
+            <div class="col-md-4">
+                <label for="toDate" class="form-label">To Date</label>
+                <input type="date" name="toDate" class="form-control" 
+                       value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            </div>
+            
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-success w-100">
+                    <i class="bi bi-file-earmark-excel"></i> Export CSV
+                </button>
+            </div>
+            
+            <div class="col-12">
+                <small class="text-muted">
+                    Export all inquiries within the selected date range as CSV file.
+                    Leave dates empty to export all inquiries.
+                </small>
+            </div>
+        </form>
+    </div>
+</div>
     <!-- Stats Cards -->
     <div class="row">
         <div class="col-xl-3 col-md-6">
