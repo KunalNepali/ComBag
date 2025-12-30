@@ -305,6 +305,14 @@
       "PackagePath": "staticwebassets/uploads/repairs/997546c4-1e58-439c-b6c7-60c1171546c2_r1.jpg"
     },
     {
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/services/09a25069-acbb-4b2f-91e0-a4095c6e7a40.jpg",
+      "PackagePath": "staticwebassets/uploads/services/09a25069-acbb-4b2f-91e0-a4095c6e7a40.jpg"
+    },
+    {
+      "Id": "/home/kunal/Desktop/ComBag/wwwroot/uploads/services/9c697925-6654-4df2-9833-9b66fec2e4f2.jpg",
+      "PackagePath": "staticwebassets/uploads/services/9c697925-6654-4df2-9833-9b66fec2e4f2.jpg"
+    },
+    {
       "Id": "obj/Debug/net8.0/staticwebassets/msbuild.ComBag.Microsoft.AspNetCore.StaticWebAssets.props",
       "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
     },

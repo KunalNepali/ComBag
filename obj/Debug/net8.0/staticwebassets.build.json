@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "fEjjJVYHD9n5PD9BiGC7tAB+kM0rWN2wNvzJZJJZHIQ=",
+  "Hash": "sMpYeI6OJHKBT4Qw49OmsRMt8Go9bBz11MsYU47Cn3s=",
   "Source": "ComBag",
   "BasePath": "_content/ComBag",
   "Mode": "Default",
@@ -2618,6 +2618,44 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot/uploads/repairs/997546c4-1e58-439c-b6c7-60c1171546c2_r1.jpg"
+    },
+    {
+      "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/services/09a25069-acbb-4b2f-91e0-a4095c6e7a40.jpg",
+      "SourceId": "ComBag",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/kunal/Desktop/ComBag/wwwroot/",
+      "BasePath": "_content/ComBag",
+      "RelativePath": "uploads/services/09a25069-acbb-4b2f-91e0-a4095c6e7a40.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/services/09a25069-acbb-4b2f-91e0-a4095c6e7a40.jpg"
+    },
+    {
+      "Identity": "/home/kunal/Desktop/ComBag/wwwroot/uploads/services/9c697925-6654-4df2-9833-9b66fec2e4f2.jpg",
+      "SourceId": "ComBag",
+      "SourceType": "Discovered",
+      "ContentRoot": "/home/kunal/Desktop/ComBag/wwwroot/",
+      "BasePath": "_content/ComBag",
+      "RelativePath": "uploads/services/9c697925-6654-4df2-9833-9b66fec2e4f2.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "PreferTarget",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot/uploads/services/9c697925-6654-4df2-9833-9b66fec2e4f2.jpg"
     }
   ]
 }
