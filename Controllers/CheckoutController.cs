@@ -149,13 +149,16 @@ namespace ComBag.Controllers
 
                 // Add initial tracking entry - USE SINGULAR 'OrderTracking' (check your DbSet name)
                 var tracking = new OrderTracking
-                {
-                    OrderId = order.Id,
-                    Status = "Pending",
-                    Description = "Order placed successfully",
-                    CreatedBy = "System",
-                    NotifyCustomer = true
-                };
+{
+    OrderId = order.Id,
+    Status = "Pending",
+    Description = "Order placed successfully",
+    CreatedBy = "System",
+    Location = "Order Placed",
+    Carrier = "Not Assigned",        // ADD THIS
+    TrackingNumber = "N/A",          // ADD THIS - required field
+    NotifyCustomer = true
+};
                 
                 // Try using the singular name since your ApplicationDbContext shows 'OrderTracking'
                 // If this doesn't work, check what your actual DbSet name is
@@ -286,13 +289,16 @@ namespace ComBag.Controllers
                         order.Status = "Processing";
                         
                         var tracking = new OrderTracking
-                        {
-                            OrderId = order.Id,
-                            Status = "Processing",
-                            Description = $"Payment confirmed via {order.PaymentMethod}. Transaction ID: {transactionId}",
-                            CreatedBy = "System",
-                            NotifyCustomer = true
-                        };
+{
+    OrderId = order.Id,
+    Status = "Pending",
+    Description = "Order placed successfully",
+    CreatedBy = "System",
+    Location = "Order Placed",
+    Carrier = "Not Assigned",        // ADD THIS
+    TrackingNumber = "N/A",          // ADD THIS - required field
+    NotifyCustomer = true
+};
                         _context.OrderTracking.Add(tracking); // Use singular
                         
                         await _context.SaveChangesAsync();
@@ -308,11 +314,14 @@ namespace ComBag.Controllers
             order.PaymentStatus = "Failed";
             var failedTracking = new OrderTracking
             {
-                OrderId = order.Id,
-                Status = "Payment Failed",
-                Description = $"Payment failed via {order.PaymentMethod}. Transaction ID: {transactionId}",
-                CreatedBy = "System",
-                NotifyCustomer = true
+   OrderId = order.Id,
+    Status = "Pending",
+    Description = "Order placed successfully",
+    CreatedBy = "System",
+    Location = "Order Placed",
+    Carrier = "Not Assigned",        // ADD THIS
+    TrackingNumber = "N/A",          // ADD THIS - required field
+    NotifyCustomer = true
             };
             _context.OrderTracking.Add(failedTracking); // Use singular
             
