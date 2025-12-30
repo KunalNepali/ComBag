@@ -43,7 +43,7 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>$@item.Price.ToString("N2")</td>
+                                <td>NRs.@item.Price.ToString("N2")</td>
                                 <td>
                                     <form asp-action="UpdateQuantity" method="post" class="d-flex">
                                         @Html.AntiForgeryToken()
@@ -62,7 +62,7 @@
                                         </button>
                                     </form>
                                 </td>
-                                <td>$@item.Subtotal.ToString("N2")</td>
+                                <td>NRs.@item.Subtotal.ToString("N2")</td>
                                 <td>
                                     <form asp-action="RemoveFromCart" method="post">
                                         @Html.AntiForgeryToken()
@@ -103,15 +103,15 @@
                         <tbody>
                             <tr>
                                 <td>Subtotal</td>
-                                <td class="text-end">$@total.ToString("N2")</td>
+                                <td class="text-end">NRs.@total.ToString("N2")</td>
                             </tr>
                             <tr>
                                 <td>Shipping</td>
-                                <td class="text-end">$0.00</td>
+                                <td class="text-end">NRs.0.00</td>
                             </tr>
                             <tr class="border-top">
                                 <th>Total</th>
-                                <th class="text-end">$@total.ToString("N2")</th>
+                                <th class="text-end">NRs.@total.ToString("N2")</th>
                             </tr>
                         </tbody>
                     </table>
